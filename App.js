@@ -18,7 +18,7 @@ const App = () => {
           options={({ navigation }) => ({
             title: 'HabitUp',
             headerTitleStyle: {
-              fontSize: 16,
+              fontSize: 18,
             },
             headerStyle: { backgroundColor: colors.black2 },
             headerShadowVisible: false,
@@ -33,7 +33,23 @@ const App = () => {
             ),
           })}
         />
-        <Stack.Screen name="AddHabitPage" component={AddHabitPage} />
+        <Stack.Screen name="AddHabitPage" component={AddHabitPage} options={({ navigation }) => ({
+            title: 'HabitUp',
+            headerTitleStyle: {
+              fontSize: 18,
+            },
+            headerStyle: { backgroundColor: colors.black2 },
+            headerShadowVisible: false,
+            headerTitleAlign: 'center',
+            headerTintColor: colors.purple,
+            headerLeft: () => (
+              <TouchableOpacity onPress=
+                {() => navigation.goBack()}>
+                  <Image style={{ height: 20, width: 20, tintColor: colors.secondaryColor }}
+                    source={require('./assets/icons/arrow.png')} />
+              </TouchableOpacity>
+            ),
+          })} />
       </Stack.Navigator>
     </NavigationContainer>
   );
