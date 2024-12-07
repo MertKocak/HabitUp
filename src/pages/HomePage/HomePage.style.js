@@ -9,7 +9,8 @@ export default StyleSheet.create({
         backgroundColor: colors.black1,
         flex: 1,
         padding: 16,
-        justifyContent: "center",
+        paddingTop: 8,
+        justifyContent: "flex-start",
         alignItems: 'center',
     },
     text: {

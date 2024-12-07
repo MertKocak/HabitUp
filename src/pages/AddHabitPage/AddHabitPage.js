@@ -1,14 +1,24 @@
 import { StyleSheet, Text, View, Dimensions, TouchableOpacity } from 'react-native';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { TextInput } from 'react-native-paper';
 import styles from "./AddHabitPage.style";
 import colors from '../../colors';
+import { default as axios } from 'axios';
 
 export default function AddHabitPage({ navigation }) {
 
   const [habitTitle, sethabitTitle] = React.useState("");
   const [habitDesc, sethabitDesc] = React.useState("");
   const [habitDay, sethabitDay] = React.useState(0);
+
+  function handleSubmit() {
+    const habitData = {
+      habitTitle,
+      habitDesc,
+      habitDay,
+    }
+    axios.post("http://192.168.1.105:3000/habit", habitData).then(res => console.log(res.data)).catch(e => console.log(e));
+  }
 
 
   return (
@@ -17,7 +27,7 @@ export default function AddHabitPage({ navigation }) {
       <View style={{ height: 2, width: Dimensions.get('window').width - 32, marginTop: 12, backgroundColor: colors.black2 }}></View>
       <TextInput
         style={styles.input}
-        label= "Alışkanlık İsmi"
+        label="Alışkanlık İsmi"
         textColor='#1B1B1B'
         activeOutlineColor='#1B1B1B'
         underlineColor='#1B1B1B'
@@ -27,7 +37,7 @@ export default function AddHabitPage({ navigation }) {
       />
       <TextInput
         style={styles.input}
-        label= "Alışkanlık Açıklaması"
+        label="Alışkanlık Açıklaması"
         textColor='#1B1B1B'
         activeOutlineColor='#1B1B1B'
         underlineColor='#1B1B1B'
@@ -37,7 +47,7 @@ export default function AddHabitPage({ navigation }) {
       />
       <TextInput
         style={styles.input}
-        label= "Alışkanlık Süresi (Gün)"
+        label="Alışkanlık Süresi (Gün)"
         textColor='#1B1B1B'
         activeOutlineColor='#1B1B1B'
         underlineColor='#1B1B1B'
@@ -46,12 +56,12 @@ export default function AddHabitPage({ navigation }) {
         onChangeText={habitDay => sethabitDay(habitDay)}
         keyboardType='numeric'
       />
-      <TouchableOpacity onPress={() => console.log("Eklendi: " + habitTitle + "-" + habitDesc + "-" + habitDay)}>
-      <View style= {styles.addButton}>
-        <Text style ={styles.addButtonText}>
-          Ekle
-        </Text>
-      </View>
+      <TouchableOpacity onPress={() => handleSubmit()}>
+        <View style={styles.addButton}>
+          <Text style={styles.addButtonText}>
+            Ekle
+          </Text>
+        </View>
       </TouchableOpacity>
 
 
