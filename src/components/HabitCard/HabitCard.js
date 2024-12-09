@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react';
 import styles from "./HabitCard.style";
 import { default as axios } from 'axios';
@@ -22,22 +22,44 @@ export default function HabitCard() {
             });
     }, []);
 
+    function buttonHandle() {
+
+    }
+
     for (let i = 0; i < data.length; i++) {
+        const dayCount = data[i].habitDay;
+        const squares = [];
+        for (let j = 0; j < dayCount; j++) {
+            
+            squares.push(
+                <View
+                    key={`square-${i}-${j}`}
+                    style={styles.squares}
+                />
+            );
+        }
         renderedItems.push(
             <View style={styles.container} key={i}>
-                <View style={ styles.innerCont}>
-                    <Text style={styles.title}>
-                        {data[i].habitTitle}
-                    </Text>
-                    <Text style={styles.desc}>
-                        {data[i].habitDesc}
-                    </Text>
+                <View style={{ flexDirection: "row" }}>
+                    <View style={styles.innerCont}>
+                        <Text style={styles.title}>{data[i].habitTitle}</Text>
+                        <Text style={styles.desc}>{data[i].habitDesc}</Text>
+
+                    </View>
+                    <View style={{ marginRight: 0 }}>
+                        <Text style={styles.day}>{data[i].habitDay}</Text>
+                    </View>
                 </View>
-                <View style={{marginRight: 0}}>
-                <Text style={styles.day}>
-                        {data[i].habitDay}
-                    </Text>
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 16, marginBottom: 6 }}>
+                    {squares}
                 </View>
+                <TouchableOpacity onPress={() => buttonHandle()}>
+                    <View style= {styles.button}>
+                        <Text style={styles.buttonText}>
+                            Bugünü Tamamla!
+                        </Text>
+                    </View>
+                </TouchableOpacity>
             </View>
         );
     }

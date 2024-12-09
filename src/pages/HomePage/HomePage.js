@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View , ScrollView} from 'react-native';
 import React, { useEffect, useState } from 'react';
 import AddHabitPage from '../AddHabitPage';
 import styles from "./HomePage.style";
@@ -24,11 +24,13 @@ export default function HomePage({ navigation }) {
   }, []);
 
   return (
-    <View style={styles.body}>
-      <View>
-        <HabitCard></HabitCard>
+    <ScrollView>
+      <View style={styles.body}>
+        <View>
+          <HabitCard></HabitCard>
+        </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 

@@ -16,10 +16,9 @@ export default StyleSheet.create({
         paddingRight: 20,
         borderColor: colors.gray,
         borderWidth: 0.5,
-        flexDirection: "row"
+        flexDirection: "column"
     },
     innerCont: {
-       // backgroundColor: "blue", 
         flexDirection: 'column',
         maxWidth: windowWidth - 88,
         flex: 1,
@@ -35,13 +34,35 @@ export default StyleSheet.create({
         fontWeight: "200",
         marginTop: 2,
         paddingRight: 20,
-        
+
     },
     day: {
         color: colors.white,
         fontSize: 14,
         fontWeight: "500",
-      //  backgroundColor: "red",
         marginLeft: 8,
+        maxWidth: 16,
     },
+    squares: {
+        width: 20,
+        height: 20,
+        borderRadius: 2,
+        backgroundColor: colors.white,
+        margin: 4,
+
+    },
+    button: {
+        backgroundColor: colors.purple,
+        marginTop: 16,
+        marginBottom: 6,
+        height: 44,
+        justifyContent: "center",
+        borderRadius: 8,
+    },
+    buttonText: {
+        color: colors.white,
+        textAlign: "center",
+        fontWeight: "600",
+        fontSize: 16,
+    }
 })
