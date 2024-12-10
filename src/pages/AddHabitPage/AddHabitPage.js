@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, Dimensions, TouchableOpacity } from 'react-nati
 import React, { useState } from 'react';
 import { TextInput } from 'react-native-paper';
 import styles from "./AddHabitPage.style";
+import HomePage from '../HomePage';
 import colors from '../../colors';
 import { default as axios } from 'axios';
 
@@ -16,8 +17,9 @@ export default function AddHabitPage({ navigation }) {
       habitTitle,
       habitDesc,
       habitDay,
-    }
+    };
     axios.post("http://192.168.1.105:3000/habit", habitData).then(res => console.log(res.data)).catch(e => console.log(e));
+    navigation.navigate('HomePage');
   }
 
 

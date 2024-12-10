@@ -4,6 +4,7 @@ import AddHabitPage from '../AddHabitPage';
 import styles from "./HomePage.style";
 import { default as axios } from 'axios';
 import HabitCard from '../../components/HabitCard';
+import colors from '../../colors';
 
 export default function HomePage({ navigation }) {
   const [data, setData] = useState([]);
@@ -11,7 +12,8 @@ export default function HomePage({ navigation }) {
   useEffect(() => {
     axios.get('http://10.0.2.2:3000/habit')
       .then(response => {
-        setData(response.data);
+        const reversedData = response.data.reverse();
+        setData(reversedData);
       })
       .catch(error => {
         if (error.response) {
@@ -24,7 +26,7 @@ export default function HomePage({ navigation }) {
   }, []);
 
   return (
-    <ScrollView>
+    <ScrollView style={{backgroundColor: colors.black1}}>
       <View style={styles.body}>
         <View>
           <HabitCard></HabitCard>

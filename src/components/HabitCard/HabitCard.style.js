@@ -41,7 +41,6 @@ export default StyleSheet.create({
         fontSize: 14,
         fontWeight: "500",
         marginLeft: 8,
-        maxWidth: 16,
     },
     squares: {
         width: 20,
@@ -64,5 +63,5 @@ export default StyleSheet.create({
         textAlign: "center",
         fontWeight: "600",
         fontSize: 16,
-    }
+    },
 })
