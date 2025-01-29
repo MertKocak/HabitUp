@@ -10,7 +10,7 @@ export default function HomePage({ navigation }) {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    axios.get('http://10.0.2.2:3000/habit')
+    axios.get('https://habitup-backend.onrender.com/habit')
       .then(response => {
         const reversedData = response.data.reverse();
         setData(reversedData);
@@ -29,7 +29,7 @@ export default function HomePage({ navigation }) {
     <ScrollView style={{backgroundColor: colors.black1}}>
       <View style={styles.body}>
         <View>
-          <HabitCard></HabitCard>
+          <HabitCard navigation={navigation}></HabitCard>
         </View>
       </View>
     </ScrollView>

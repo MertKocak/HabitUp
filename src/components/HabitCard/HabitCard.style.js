@@ -25,12 +25,12 @@ export default StyleSheet.create({
     },
     title: {
         color: colors.white,
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: "700",
     },
     desc: {
         color: colors.white,
-        fontSize: 14,
+        fontSize: 12,
         fontWeight: "200",
         marginTop: 2,
         paddingRight: 20,
@@ -38,23 +38,22 @@ export default StyleSheet.create({
     },
     day: {
         color: colors.white,
-        fontSize: 14,
+        fontSize: 12,
         fontWeight: "500",
         marginLeft: 8,
     },
     squares: {
-        width: 20,
-        height: 20,
+        width: 18,
+        height: 18,
         borderRadius: 2,
         backgroundColor: colors.white,
-        margin: 4,
-
+        margin: 3,
     },
     button: {
         backgroundColor: colors.purple,
-        marginTop: 16,
+        marginTop: 12,
         marginBottom: 6,
-        height: 44,
+        height: 40,
         justifyContent: "center",
         borderRadius: 8,
     },
@@ -62,6 +61,6 @@ export default StyleSheet.create({
         color: colors.white,
         textAlign: "center",
         fontWeight: "600",
-        fontSize: 16,
+        fontSize: 14,
     },
 })

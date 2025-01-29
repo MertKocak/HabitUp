@@ -3,14 +3,15 @@ import React, { useEffect, useState } from 'react';
 import styles from "./HabitCard.style";
 import { default as axios } from 'axios';
 import colors from '../../colors';
+import HabitEditPage from '../../pages/HabitEditPage';
 
-export default function HabitCard() {
+export default function HabitCard({ navigation }) {
     const [data, setData] = useState([]);
     const [progress, setProgress] = useState({}); // Her alışkanlık için ayrı ilerleme durumu
 
     // Veriyi çekme ve progress değerini başlatma
     useEffect(() => {
-        axios.get('http://10.0.2.2:3000/habit')
+        axios.get('https://habitup-backend.onrender.com/habit')
             .then(response => {
                 const reversedData = response.data.reverse();
                 setData(reversedData);
@@ -29,9 +30,8 @@ export default function HabitCard() {
             });
     }, []);
 
-    // Buton tıklama fonksiyonu
+    // ADD BUTTON
     const handleButtonPress = (habit_id) => {
-        console.log(habit_id)
         setProgress((prevProgress) => {
             const updatedProgress = { ...prevProgress };
             const habit = data.find(item => item._id === habit_id);
@@ -43,6 +43,10 @@ export default function HabitCard() {
         });
     };
 
+    const goToEditPage = (id, title, desc, day) => {
+        navigation.navigate('HabitEditPage', { id, title, desc, day });
+    }
+
     return (
         <View>
             {data.map((item) => {
@@ -51,16 +55,18 @@ export default function HabitCard() {
 
                 return (
                     <View style={styles.container} key={item._id}>
-                        <View style={{ flexDirection: 'row' }}>
-                            <View style={styles.innerCont}>
-                                <Text style={styles.title}>{item.habitTitle}</Text>
-                                <Text style={styles.desc}>{item.habitDesc}</Text>
+                        <TouchableOpacity onPress={() => goToEditPage(item._id, item.habitTitle, item.habitDesc, item.habitDay)}>
+                            <View style={{ flexDirection: 'row' }}>
+                                <View style={styles.innerCont}>
+                                    <Text style={styles.title}>{item.habitTitle}</Text>
+                                    <Text style={styles.desc}>{item.habitDesc}</Text>
+                                </View>
+                                <View>
+                                    <Text style={styles.day}>{currentProgress}/{dayCount}</Text>
+                                </View>
                             </View>
-                            <View>
-                                <Text style={styles.day}>{currentProgress}/{dayCount}</Text>
-                            </View>
-                        </View>
-                        <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 16 }}>
+                        </TouchableOpacity>
+                        <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 12, marginLeft: -3 }}>
                             {Array.from({ length: dayCount }, (_, j) => (
                                 <View
                                     key={`square-${item._id}-${j}`} // Her kareye benzersiz key eklendi
@@ -84,46 +90,46 @@ export default function HabitCard() {
 }
 
 
- /* for (let i = 0; i < data.length; i++) {
-        const dayCount = data[i].habitDay;
-        const squares = [];
-        for (let j = 0; j < dayCount; j++) {
+/* for (let i = 0; i < data.length; i++) {
+       const dayCount = data[i].habitDay;
+       const squares = [];
+       for (let j = 0; j < dayCount; j++) {
 
-            squares.push(
-                <View
-                    key={`square-${i}-${j}`}
-                    style={styles.squares}
-                />
-            );
-        }
-        renderedItems.push(
-            <View style={styles.container} key={i}>
-                <View style={{ flexDirection: "row" }}>
-                    <View style={styles.innerCont}>
-                        <Text style={styles.title}>{data[i].habitTitle}</Text>
-                        <Text style={styles.desc}>{data[i].habitDesc}</Text>
+           squares.push(
+               <View
+                   key={`square-${i}-${j}`}
+                   style={styles.squares}
+               />
+           );
+       }
+       renderedItems.push(
+           <View style={styles.container} key={i}>
+               <View style={{ flexDirection: "row" }}>
+                   <View style={styles.innerCont}>
+                       <Text style={styles.title}>{data[i].habitTitle}</Text>
+                       <Text style={styles.desc}>{data[i].habitDesc}</Text>
 
-                    </View>
-                    <View style={{ marginRight: 0 }}>
-                        <Text style={styles.day}>{data[i].habitDay}</Text>
-                    </View>
-                </View>
-                <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 16, marginBottom: 6 }}>
-                    {squares}
-                </View>
-                <Text style={styles.title}>
-                            Progress: {currentProgress}/{dayCount}
-                        </Text>
-                        <View style={styles.progressBar}>
-                            <View style={[styles.progressFill, { w_idth: `${(currentProgress / dayCount) * 100}%` }]} />
-                        </View>
-                        <TouchableOpacity onPress={() => increaseProgress(item._id, dayCount)}>
-                            <View style={styles.button}>
-                                <Text style={styles.buttonText}>
-                                    Bugünü Tamamla!
-                                </Text>
-                            </View>
-                        </TouchableOpacity>
-            </View>
-        );
-    } */
+                   </View>
+                   <View style={{ marginRight: 0 }}>
+                       <Text style={styles.day}>{data[i].habitDay}</Text>
+                   </View>
+               </View>
+               <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 16, marginBottom: 6 }}>
+                   {squares}
+               </View>
+               <Text style={styles.title}>
+                           Progress: {currentProgress}/{dayCount}
+                       </Text>
+                       <View style={styles.progressBar}>
+                           <View style={[styles.progressFill, { w_idth: `${(currentProgress / dayCount) * 100}%` }]} />
+                       </View>
+                       <TouchableOpacity onPress={() => increaseProgress(item._id, dayCount)}>
+                           <View style={styles.button}>
+                               <Text style={styles.buttonText}>
+                                   Bugünü Tamamla!
+                               </Text>
+                           </View>
+                       </TouchableOpacity>
+           </View>
+       );
+   } */
