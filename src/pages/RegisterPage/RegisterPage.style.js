@@ -17,8 +17,8 @@ export default StyleSheet.create({
     title: {
         fontSize: 16,
         color: colors.purple,
-        fontWeight: "bold",
-        marginTop: 20
+        marginTop: 20,
+        fontFamily: "Manrope-Bold"
     },
     input: {
         marginTop: 16,
@@ -30,6 +30,7 @@ export default StyleSheet.create({
         marginLeft: 16,
         marginRight: 16,
         fontSize: 14,
+        fontFamily: "Manrope-Medium"
     },
     addButton: {
         marginTop: 32,
@@ -44,20 +45,22 @@ export default StyleSheet.create({
         textAlignVertical: "center",
         fontSize: 14,
         color: colors.white,
-        fontWeight: "bold"
+        fontFamily: "Manrope-Bold"
     },
     registerText: {
         fontSize: 12,
         color: colors.purple,
         marginLeft: 4,
-        marginTop: 16
+        marginTop: 16,
+        fontFamily: "Manrope-Medium"
 
     },
     text: {
         fontSize: 12,
         color: colors.white,
         marginRight: 4,
-        marginTop: 16
+        marginTop: 16,
+        fontFamily: "Manrope-Medium"
     }
 
 })

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Dimensions, TouchableOpacity } from 'react-native';
+import { StyleSheet, Alert, Image, Text, View, Dimensions, TouchableOpacity, ToastAndroid } from 'react-native';
 import { CommonActions } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { TextInput } from 'react-native-paper';
@@ -19,7 +19,7 @@ export default function AddHabitPage({ navigation }) {
       habitDesc,
       habitDay,
     };
-    axios.post("https://habitup-backend.onrender.com/habit", habitData).then(res => console.log(res.data)).catch(e => console.log(e));
+    axios.post("https://habitup-backend.onrender.com/habit", habitData).then(ToastAndroid.show('Alışkanlık eklendi!', ToastAndroid.SHORT)).catch(e => console.log(e));
     navigation.dispatch(
       CommonActions.reset({
         index: 0,
@@ -28,9 +28,24 @@ export default function AddHabitPage({ navigation }) {
     ); // Ana sayfaya yönlendirme
   }
 
-
   return (
     <View style={styles.body}>
+      <View style={{ backgroundColor: colors.black2, flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 8, marginBottom: 24, width: Dimensions.get('window').width }}>
+        <TouchableOpacity onPress=
+          {() => navigation.goBack()}>
+          <View style={{ height: 52, paddingHorizontal: 24, width: 52, justifyContent: 'center', alignItems: 'flex-end' }}>
+            <Image style={{ height: 20, width: 20, tintColor: colors.purple }}
+              source={require('../../../assets/icons/arrow.png')} />
+          </View>
+        </TouchableOpacity>
+        <Image style={{ height: 40, width: 108, marginTop: 8 }}
+          source={require('../../../assets/images/logo.png')} />
+        <TouchableOpacity onPress=
+          {() => null}>
+          <View style={{ height: 52, paddingHorizontal: 8, width: 52, justifyContent: 'center', alignItems: 'flex-end' }}>
+          </View>
+        </TouchableOpacity>
+      </View>
       <Text style={styles.title}>Alışkanlık Ekle</Text>
       <View style={{ height: 2, width: Dimensions.get('window').width - 32, marginTop: 12, backgroundColor: colors.black2 }}></View>
       <TextInput
@@ -64,16 +79,14 @@ export default function AddHabitPage({ navigation }) {
         onChangeText={habitDay => sethabitDay(habitDay)}
         keyboardType='numeric'
       />
-      <TouchableOpacity onPress={() => handleSubmit()}>
-        <View style={styles.addButton}>
-          <Text style={styles.addButtonText}>
-            Ekle
-          </Text>
-        </View>
-      </TouchableOpacity>
-
-
-    </View>
+        <TouchableOpacity onPress={() => handleSubmit()}>
+          <View style={styles.addButton}>
+            <Text style={styles.addButtonText}>
+              Ekle
+            </Text>
+          </View>
+        </TouchableOpacity>
+      </View>
   );
 }
 

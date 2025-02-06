@@ -1,9 +1,10 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
 import React, { useEffect, useState } from 'react';
 import styles from "./HabitCard.style";
 import { default as axios } from 'axios';
 import colors from '../../colors';
 import HabitEditPage from '../../pages/HabitEditPage';
+import Sound from 'react-native-sound';
 
 export default function HabitCard({ navigation }) {
     const [data, setData] = useState([]);
@@ -37,7 +38,16 @@ export default function HabitCard({ navigation }) {
             const habit = data.find(item => item._id === habit_id);
             const maxProgress = habit.habitDay;
             if (updatedProgress[habit_id] < maxProgress) {
-                updatedProgress[habit_id] += 1; // İlerleme 1 artırılır
+                const sound = new Sound(require('../../../assets/sounds/click.mp3'), (error) => {
+                    if (error) {
+                      console.log('Ses yüklenirken hata oluştu:', error);
+                      return;
+                    }
+                    sound.play(() => {
+                      sound.release(); // Belleği temizle
+                    });
+                  });
+                 updatedProgress[habit_id] += 1; // İlerleme 1 artırılır
             }
             return updatedProgress;
         });
@@ -55,18 +65,20 @@ export default function HabitCard({ navigation }) {
 
                 return (
                     <View style={styles.container} key={item._id}>
-                        <TouchableOpacity onPress={() => goToEditPage(item._id, item.habitTitle, item.habitDesc, item.habitDay)}>
-                            <View style={{ flexDirection: 'row' }}>
-                                <View style={styles.innerCont}>
-                                    <Text style={styles.title}>{item.habitTitle}</Text>
-                                    <Text style={styles.desc}>{item.habitDesc}</Text>
-                                </View>
-                                <View>
-                                    <Text style={styles.day}>{currentProgress}/{dayCount}</Text>
-                                </View>
+                        <View style={{ flexDirection: 'row' }}>
+                            <TouchableOpacity style={{ alignSelf: 'center', height: 32, marginRight: 4, justifyContent: 'center' }} onPress={() => goToEditPage(item._id, item.habitTitle, item.habitDesc, item.habitDay)}>
+                                <Image style={{ height: 22, width: 22, tintColor: colors.purple, alignSelf: 'center', marginRight: 8 }}
+                                    source={require('../../../assets/icons/edit.png')} />
+                            </TouchableOpacity>
+                            <View style={styles.innerCont}>
+                                <Text style={styles.title}>{item.habitTitle}</Text>
+                                <Text style={styles.desc}>{item.habitDesc}</Text>
                             </View>
-                        </TouchableOpacity>
-                        <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 12, marginLeft: -3 }}>
+                            <View>
+                                <Text style={styles.day}>{currentProgress}/{dayCount}</Text>
+                            </View>
+                        </View>
+                        <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 12, marginLeft: -2 }}>
                             {Array.from({ length: dayCount }, (_, j) => (
                                 <View
                                     key={`square-${item._id}-${j}`} // Her kareye benzersiz key eklendi
@@ -79,6 +91,8 @@ export default function HabitCard({ navigation }) {
                         </View>
                         <TouchableOpacity onPress={() => handleButtonPress(item._id)}>
                             <View style={styles.button}>
+                            <Image style={{ height: 22, width: 22, tintColor: colors.white}}
+                                    source={require('../../../assets/icons/check.png')} />
                                 <Text style={styles.buttonText}>Bugünü Tamamla!</Text>
                             </View>
                         </TouchableOpacity>
