@@ -7,7 +7,7 @@ const windowHeight = Dimensions.get('window').height;
 export default StyleSheet.create({
     body: {
         padding: 16,
-        paddingTop: 24,
+        paddingTop: 0,
         backgroundColor: colors.black1,
         flex: 1,
         justifyContent: "flex-start",
@@ -15,10 +15,11 @@ export default StyleSheet.create({
         flexDirection: "column"
     },
     title: {
-        fontSize: 16,
+        fontSize: 14,
         color: colors.purple,
-        fontWeight: "bold",
-        marginTop: 20
+        fontFamily: "Manrope-Bold",
+        alignSelf: "center",
+        marginBottom: 2,
     },
     input: {
         marginTop: 16,

@@ -116,6 +116,7 @@ const App = () => {
           component={UserPage}
           options={({ navigation }) => ({
             title: 'kullanıcı',
+            headerShown: false,
             headerTitleStyle: {
               fontSize: 18,
             },

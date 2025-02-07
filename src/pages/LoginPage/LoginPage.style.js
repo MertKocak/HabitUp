@@ -22,15 +22,18 @@ export default StyleSheet.create({
     },
     input: {
         marginTop: 16,
-        height: 54,
-        paddingBottom: 2,
+        height: 48,
+        paddingLeft: 16,
+        justifyContent: "center",
         backgroundColor: colors.white,
         borderRadius: 6,
         width: windowWidth - 32,
         marginLeft: 16,
         marginRight: 16,
         fontSize: 14,
-        fontFamily: "Manrope-Bold",
+        fontFamily: "Manrope-Medium",
+        color: colors.black2,
+        
     },
     addButton: {
         marginTop: 16,

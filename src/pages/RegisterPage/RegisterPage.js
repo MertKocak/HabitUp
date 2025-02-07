@@ -1,7 +1,7 @@
-import { StyleSheet, Text, Button, View, Dimensions, TouchableOpacity, Image, Alert, ToastAndroid } from 'react-native';
+import { StyleSheet,TextInput, Text, Button, View, Dimensions, TouchableOpacity, Image, Alert, ToastAndroid } from 'react-native';
 import { CommonActions } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { TextInput } from 'react-native-paper';
+//import { TextInput } from 'react-native-paper';
 import styles from "./RegisterPage.style";
 import HomePage from '../HomePage';
 import colors from '../../colors';
@@ -65,32 +65,26 @@ export default function RegisterPage({ navigation }) {
       <View style={{ height: 2, width: Dimensions.get('window').width - 32, marginTop: 12, backgroundColor: colors.black2 }}></View>
       <TextInput
         style={styles.input}
-        label="Kullanıcı Adı"
-        textColor='#1B1B1B'
-        activeOutlineColor='#1B1B1B'
-        underlineColor='#1B1B1B'
-        activeUnderlineColor='#B836FC'
+        placeholder="Kullanıcı Adı"
+        placeholderTextColor={colors.gray}
+        cursorColor={colors.gray}
         value={username}
         onChangeText={username => setUsername(username)}
       />
       <TextInput
         style={styles.input}
-        label="E-posta Adresi"
-        textColor='#1B1B1B'
-        activeOutlineColor='#1B1B1B'
-        underlineColor='#1B1B1B'
-        activeUnderlineColor='#B836FC'
+        placeholder="E-posta Adresi"
+        placeholderTextColor={colors.gray}
+        cursorColor={colors.gray}
         value={email}
         onChangeText={email => setEmail(email)}
       />
-      <View style={{ flexDirection: "row", alignItems: "center", backgroundColor: colors.white, height: 56, marginTop: 15, width: Dimensions.get('window').width - 32, borderRadius: 6 }}>
+      <View style={{ flexDirection: "row", alignItems: "center", backgroundColor: colors.white, height: 48, marginTop: 16, width: Dimensions.get('window').width - 32, borderRadius: 6 }}>
         <TextInput
           style={[styles.input, { marginTop: 0, marginLeft: 0, marginRight: 0, width: Dimensions.get('window').width - 80, }]}
-          label="Şifre"
-          textColor='#1B1B1B'
-          activeOutlineColor='#1B1B1B'
-          underlineColor='#1B1B1B'
-          activeUnderlineColor='#B836FC'
+          placeholder="Şifre"
+          placeholderTextColor={colors.gray}
+          cursorColor={colors.gray}
           secureTextEntry={secureText}
           value={password}
           onChangeText={password => setPassword(password)}

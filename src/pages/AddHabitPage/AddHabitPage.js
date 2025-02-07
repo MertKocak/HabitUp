@@ -1,7 +1,7 @@
-import { StyleSheet, Alert, Image, Text, View, Dimensions, TouchableOpacity, ToastAndroid } from 'react-native';
+import { StyleSheet,TextInput, Alert, Image, Text, View, Dimensions, TouchableOpacity, ToastAndroid } from 'react-native';
 import { CommonActions } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { TextInput } from 'react-native-paper';
+//import { TextInput } from 'react-native-paper';
 import styles from "./AddHabitPage.style";
 import HomePage from '../HomePage';
 import colors from '../../colors';
@@ -50,31 +50,25 @@ export default function AddHabitPage({ navigation }) {
       <View style={{ height: 2, width: Dimensions.get('window').width - 32, marginTop: 12, backgroundColor: colors.black2 }}></View>
       <TextInput
         style={styles.input}
-        label="Alışkanlık İsmi"
-        textColor='#1B1B1B'
-        activeOutlineColor='#1B1B1B'
-        underlineColor='#1B1B1B'
-        activeUnderlineColor='#B836FC'
+        placeholder="Alışkanlık İsmi"
+        placeholderTextColor={colors.gray}
+        cursorColor={colors.black2}
         value={habitTitle}
         onChangeText={habitTitle => sethabitTitle(habitTitle)}
       />
       <TextInput
         style={styles.input}
-        label="Alışkanlık Açıklaması"
-        textColor='#1B1B1B'
-        activeOutlineColor='#1B1B1B'
-        underlineColor='#1B1B1B'
-        activeUnderlineColor='#B836FC'
+        placeholder="Alışkanlık Açıklaması"
+        placeholderTextColor={colors.gray}
+        cursorColor={colors.black2}
         value={habitDesc}
         onChangeText={habitDesc => sethabitDesc(habitDesc)}
       />
       <TextInput
         style={styles.input}
-        label="Alışkanlık Süresi (Gün)"
-        textColor='#1B1B1B'
-        activeOutlineColor='#1B1B1B'
-        underlineColor='#1B1B1B'
-        activeUnderlineColor='#B836FC'
+        placeholder="Alışkanlık Süresi (Gün)"
+        placeholderTextColor={colors.gray}
+        cursorColor={colors.black2}
         value={habitDay}
         onChangeText={habitDay => sethabitDay(habitDay)}
         keyboardType='numeric'

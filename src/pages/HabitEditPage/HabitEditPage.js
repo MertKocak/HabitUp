@@ -1,8 +1,8 @@
-import { StyleSheet, Alert, Text, View, Dimensions, ToastAndroid, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, TextInput, Alert, Text, View, Dimensions, ToastAndroid, TouchableOpacity, Image } from 'react-native';
 import { CommonActions } from '@react-navigation/native';
 import React, { useState } from 'react';
 import styles from "./HabitEditPage.style";
-import { TextInput } from 'react-native-paper';
+//import { TextInput } from 'react-native-paper';
 import HomePage from '../HomePage';
 import colors from '../../colors';
 import { default as axios } from 'axios';
@@ -66,7 +66,7 @@ export default function HabitEditPage({ navigation, route }) {
         onPress: () => console.log('Cancel Pressed'),
         style: 'cancel',
       },
-      {text: 'Vazgeç', onPress: () => cancelfunction()},
+      { text: 'Vazgeç', onPress: () => cancelfunction() },
     ]);
     const cancelfunction = () => {
       navigation.dispatch(
@@ -84,7 +84,7 @@ export default function HabitEditPage({ navigation, route }) {
         <TouchableOpacity onPress=
           {() => navigation.goBack()}>
           <View style={{ height: 52, paddingHorizontal: 10, width: 52, justifyContent: 'center', alignItems: 'flex-right' }}>
-            <Image style={{ height: 22, width: 22, }}
+            <Image style={{ height: 20, width: 20, }}
               source={require('../../../assets/icons/arrow.png')} />
           </View>
         </TouchableOpacity>
@@ -101,34 +101,33 @@ export default function HabitEditPage({ navigation, route }) {
       <Text style={styles.title}>
         Alışkanlık Düzenle
       </Text>
-      <View style={{ height: 2, width: Dimensions.get('window').width - 32, marginTop: 10, backgroundColor: colors.black2 }}></View>
+      <View style={{ height: 2, width: Dimensions.get('window').width - 32, marginTop: 10, marginBottom: -6, backgroundColor: colors.black2 }}></View>
+      <Text style={styles.subtitle}>Alışkanlık Adı</Text>
       <TextInput
         style={styles.input}
-        label="Alışkanlık İsmi"
-        textColor='#1B1B1B'
-        activeOutlineColor='#1B1B1B'
-        underlineColor='#1B1B1B'
-        activeUnderlineColor='#B836FC'
+        placeholder="Alışkanlık İsmi"
+        placeholderTextColor={colors.gray}
+        cursorColor={colors.black2}
         value={habitTitle}
         onChangeText={habitTitle => sethabitTitle(habitTitle)}
       />
+            <Text style={styles.subtitle}>Alışkanlık Açıklaması</Text>
+
       <TextInput
         style={styles.input}
-        label="Alışkanlık Açıklaması"
-        textColor='#1B1B1B'
-        activeOutlineColor='#1B1B1B'
-        underlineColor='#1B1B1B'
-        activeUnderlineColor='#B836FC'
+        placeholder="Alışkanlık Açıklaması"
+        placeholderTextColor={colors.gray}
+        cursorColor={colors.black2}
         value={habitDesc}
         onChangeText={habitDesc => sethabitDesc(habitDesc)}
       />
+            <Text style={styles.subtitle}>Alışkanlık Süresi (Gün)</Text>
+
       <TextInput
         style={styles.input}
-        label="Alışkanlık Süresi (Gün)"
-        textColor='#1B1B1B'
-        activeOutlineColor='#1B1B1B'
-        underlineColor='#1B1B1B'
-        activeUnderlineColor='#B836FC'
+        placeholder="Alışkanlık Süresi (Gün)"
+        placeholderTextColor={colors.gray}
+        cursorColor={colors.black2}
         value={habitDay.toString()}
         onChangeText={habitDay => sethabitDay(habitDay)}
         keyboardType='numeric'
