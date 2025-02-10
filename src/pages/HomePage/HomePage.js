@@ -19,7 +19,13 @@ export default function HomePage({ navigation, route }) {
   useEffect(() => {
     const fetchData = async () => {
       const token = await AsyncStorage.getItem("token");
-      await axios.post('https://habitup-backend.onrender.com/userdata', { token: token }).then(res => setUserdata(res.data.data));
+      await axios.post('https://habitup-backend.onrender.com/userdata', { token: token }).then(res => setUserdata(res.data.data)).catch(error => {
+        if (error.response) {
+          alert('Sunucu hatası: ' + error.response.data ? error.response.data : "Sunucuya bağlanılamıyor." );
+        } else {
+          alert('Ağ bağlantı hatası: ' + error.message ? error.message : "Lütfen ağ bağlantınızı kontrol ediniz.");
+        }
+      });
       try {
         const response = await axios.get('https://habitup-backend.onrender.com/habit');
         const reversedData = response.data.reverse();
