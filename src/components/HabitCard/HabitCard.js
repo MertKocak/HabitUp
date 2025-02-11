@@ -82,7 +82,11 @@ export default function HabitCard({ navigation, data }) {
     return (
         <View>
             {
-                data.length === 0 ? (
+                data.length === null ? (
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                        <Text>Haydi başla</Text>
+                    </View>
+                ) : data.length === 0 ? (
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                         <ActivityIndicator size="large" color="#B836FC" />
                     </View>

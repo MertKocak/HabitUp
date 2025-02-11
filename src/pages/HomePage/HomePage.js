@@ -1,4 +1,4 @@
-import { StyleSheet, Text, Image, TouchableOpacity, View, ScrollView, Dimensions, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, Image, TouchableOpacity, View, ActivityIndicator, ScrollView, Dimensions, SafeAreaView } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import AddHabitPage from '../AddHabitPage';
 import styles from "./HomePage.style";
@@ -15,21 +15,24 @@ export default function HomePage({ navigation, route }) {
 
   const [data, setData] = useState([]);
   const [userdata, setUserdata] = useState('');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
+     setLoading(true);
       const token = await AsyncStorage.getItem("token");
       await axios.post('https://habitup-backend.onrender.com/userdata', { token: token }).then(res => setUserdata(res.data.data)).catch(error => {
         if (error.response) {
-          alert('Sunucu hatası: ' + error.response.data ? error.response.data : "Sunucuya bağlanılamıyor." );
+          alert('Sunucu hatası: ' + error.response.data ? error.response.data : "Sunucuya bağlanılamıyor.");
         } else {
           alert('Ağ bağlantı hatası: ' + error.message ? error.message : "Lütfen ağ bağlantınızı kontrol ediniz.");
         }
       });
       try {
-        const response = await axios.get('https://habitup-backend.onrender.com/habit');
-        const reversedData = response.data.reverse();
-        setData(reversedData);
+        const response = await axios.get(`https://habitup-backend.onrender.com/habit/${userdata._id}`);
+        const reversedData = await response.data.reverse();
+        await setData(reversedData);
+        setLoading(false);
       } catch (error) {
         if (error.response) {
           console.error('Response Error:', error.response.data);
@@ -40,12 +43,12 @@ export default function HomePage({ navigation, route }) {
       }
     };
     fetchData();
-  }, []);
+  }, [userdata._id]);
 
   return (
     <ScrollView style={{ backgroundColor: colors.black1 }}>
       <SafeAreaView style={styles.body}>
-        <View style={{backgroundColor: colors.black2, flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 8, marginBottom: 4, width: Dimensions.get('window').width }}>
+        <View style={{ backgroundColor: colors.black2, flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 8, marginBottom: 4, width: Dimensions.get('window').width }}>
           <TouchableOpacity onPress=
             {() => navigation.navigate('UserPage')}>
             <View style={{ height: 52, paddingHorizontal: 8, width: 52, justifyContent: 'center', alignItems: 'flex-right' }}>
@@ -53,8 +56,8 @@ export default function HomePage({ navigation, route }) {
                 source={require('../../../assets/icons/user.png')} />
             </View>
           </TouchableOpacity>
-          <Image style={{ height: 40, width: 108, marginTop: 8}}
-                source={require('../../../assets/images/logo.png')} />
+          <Image style={{ height: 40, width: 108, marginTop: 8 }}
+            source={require('../../../assets/images/logo.png')} />
           <TouchableOpacity onPress=
             {() => navigation.navigate('AddHabitPage')}>
             <View style={{ height: 52, paddingHorizontal: 8, width: 52, justifyContent: 'center', alignItems: 'flex-end' }}>
@@ -65,11 +68,33 @@ export default function HomePage({ navigation, route }) {
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginTop: 6, marginBottom: 4, width: Dimensions.get('window').width - 32 }}>
           <Text style={{ color: colors.white, fontSize: 12, fontFamily: "Manrope-Medium" }}>
-            {formattedDate.toString()}
+            {formattedDate}
           </Text>
         </View>
         <View>
-          <HabitCard navigation={navigation} data={data} /> {/* HabitCard'a data geçiyoruz */}
+          {loading ? (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <ActivityIndicator size="large" color="#B836FC" />
+            </View>
+          ) : data.length === 0 ? (
+            <View style={{ height: Dimensions.get('window').height, justifyContent: 'center' }}>
+              <Text style={{ textAlign: 'center', fontSize: 14, fontFamily: "Manrope-Regular", color: colors.white }}>
+                Başarıya giden yol,
+              </Text>
+              <View style={{ flexDirection: "row" ,marginBottom: 180, marginTop: 0}}>
+                <Text style={{ textAlign: 'center', fontSize: 14, marginRight: 4, marginTop: 1, fontFamily: "Manrope-Regular", color: colors.white }}>
+                  bir
+                </Text>
+                <Text style={{ textAlign: 'center', fontSize: 14, marginRight: 4, fontFamily: "Manrope-Bold", color: colors.purple }}>
+                  alışkanlıkla
+                </Text>
+                <Text style={{ textAlign: 'center', fontSize: 14,marginTop: 1, fontFamily: "Manrope-Regular", color: colors.white }}>
+                  başlar!
+                </Text>
+              </View>
+            </View>
+          ) : <HabitCard navigation={navigation} data={data} />
+          }
         </View>
       </SafeAreaView>
     </ScrollView>

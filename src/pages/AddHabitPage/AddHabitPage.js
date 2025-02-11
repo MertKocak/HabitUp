@@ -1,23 +1,44 @@
 import { StyleSheet,TextInput, Alert, Image, Text, View, Dimensions, TouchableOpacity, ToastAndroid } from 'react-native';
 import { CommonActions } from '@react-navigation/native';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 //import { TextInput } from 'react-native-paper';
 import styles from "./AddHabitPage.style";
 import HomePage from '../HomePage';
 import colors from '../../colors';
 import { default as axios } from 'axios';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function AddHabitPage({ navigation }) {
 
   const [habitTitle, sethabitTitle] = React.useState("");
   const [habitDesc, sethabitDesc] = React.useState("");
   const [habitDay, sethabitDay] = React.useState(0);
+  const [userdata, setUserdata] = useState('');
 
-  function handleSubmit() {
+  useEffect(() => {
+    const fetchData = async () => {
+      const token = await AsyncStorage.getItem("token");
+      await axios.post('https://habitup-backend.onrender.com/userdata', { token: token }).then(res => setUserdata(res.data.data)).catch(error => {
+        if (error.response) {
+          alert('Sunucu hatası: ' + error.response.data ? error.response.data : "Sunucuya bağlanılamıyor." );
+        } else {
+          alert('Ağ bağlantı hatası: ' + error.message ? error.message : "Lütfen ağ bağlantınızı kontrol ediniz.");
+        }
+      });
+    };
+    fetchData();
+    console.log("KULLANICI ADI: " + userdata._id);
+  }, [userdata._id]);
+
+  
+
+  const handleSubmit = async () => {
+    const userId = userdata._id;
     const habitData = {
       habitTitle,
       habitDesc,
       habitDay,
+      userId,
     };
     axios.post("https://habitup-backend.onrender.com/habit", habitData).then(ToastAndroid.show('Alışkanlık eklendi!', ToastAndroid.SHORT)).catch(e => console.log(e));
     navigation.dispatch(
