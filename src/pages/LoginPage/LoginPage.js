@@ -32,6 +32,7 @@ export default function LoginPage({ navigation }) {
           return;
         }
     try {
+      var email = email.toLowerCase();
       const response = await axios.post('https://habitup-backend.onrender.com/login', {
         email,
         password,

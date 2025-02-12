@@ -32,6 +32,7 @@ export default function RegisterPage({ navigation }) {
       Alert.alert('Eksik Bilgi!', 'Lütfen tüm alanları doldurduğunuzdan emin olun.');
       return;
     }
+    var email = email.toLowerCase();
     const userData = {
       username,
       email,

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Modal, Image, Button, ActivityIndicator, ToastAndroid, CommonActions } from 'react-native'
 import React, { useEffect, useState } from 'react';
 import styles from "./HabitCard.style";
 import { default as axios } from 'axios';
@@ -8,8 +8,11 @@ import Sound from 'react-native-sound';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function HabitCard({ navigation, data }) {
-   /*  const [data, setData] = useState([]); */
+    /*  const [data, setData] = useState([]); */
     const [progress, setProgress] = useState({}); // Her alışkanlık için ayrı ilerleme durumu
+
+    const [habitIsDone, sethabitIsDone] = React.useState(true);
+    const [modalVisible, setModalVisible] = useState(false);
 
     // Veriyi çekme ve progress değerini başlatma
 
@@ -53,12 +56,36 @@ export default function HabitCard({ navigation, data }) {
         }
     };
 
+    const habitIsDoneFunc = async (id) => {
+        const habitData = {
+            habitIsDone,
+        };
+        axios
+            .put(`https://habitup-backend.onrender.com/habit/${id}`, habitData)
+            .then(res => {
+                setModalVisible(true);
+                const soundSuccess = new Sound(require('../../../assets/sounds/success.mp3'), async (error) => {
+                    if (error) {
+                        console.log('Ses yüklenirken hata oluştu:', error);
+                        return;
+                    }
+                    await soundSuccess.play(() => {
+                        soundSuccess.release();
+                    });
+                });
+            })
+            .catch(e => console.error("Hata:", e));
+    }
+
     const handleButtonPress = (habit_id) => {
         setProgress((prevProgress) => {
             const updatedProgress = { ...prevProgress };
             const habit = data.find(item => item._id === habit_id);
             const maxProgress = habit.habitDay;
             if (updatedProgress[habit_id] < maxProgress) {
+                if (updatedProgress[habit_id] == maxProgress - 1) {
+                    habitIsDoneFunc(habit_id);
+                }
                 const sound = new Sound(require('../../../assets/sounds/click.mp3'), (error) => {
                     if (error) {
                         console.log('Ses yüklenirken hata oluştu:', error);
@@ -75,63 +102,83 @@ export default function HabitCard({ navigation, data }) {
         });
     };
 
+    const closeModal = async () => {
+        setModalVisible(false),
+        await navigation.replace("HomePage") // Ana sayfaya yönlendirme
+    }
+
+
+
     const goToEditPage = (id, title, desc, day) => {
         navigation.navigate('HabitEditPage', { id, title, desc, day });
     };
 
+
     return (
         <View>
-            {
-                data.length === null ? (
-                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                        <Text>Haydi başla</Text>
-                    </View>
-                ) : data.length === 0 ? (
-                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                        <ActivityIndicator size="large" color="#B836FC" />
-                    </View>
-                ) : (
-
-                    data.map((item) => {
-                        const dayCount = item.habitDay;
-                        const currentProgress = progress[item._id] || 0; // Her alışkanlık için ayrı ilerleme durumu
-
-                        return (
-                            <View style={styles.container} key={item._id}>
-                                <View style={{ flexDirection: 'row' }}>
-                                    <TouchableOpacity style={{ alignSelf: 'center', height: 32, marginRight: 4, justifyContent: 'center' }} onPress={() => goToEditPage(item._id, item.habitTitle, item.habitDesc, item.habitDay)}>
-                                        <Image style={{ height: 22, width: 22, tintColor: colors.purple, alignSelf: 'center', marginRight: 8 }}
-                                            source={require('../../../assets/icons/edit.png')} />
-                                    </TouchableOpacity>
-                                    <View style={styles.innerCont}>
-                                        <Text style={styles.title}>{item.habitTitle}</Text>
-                                        <Text style={styles.desc}>{item.habitDesc}</Text>
-                                    </View>
-                                    <View>
-                                        <Text style={styles.day}>{dayCount < currentProgress ? dayCount : currentProgress}/{dayCount}</Text>
-                                    </View>
-                                </View>
-                                <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 12, marginLeft: -2 }}>
-                                    {Array.from({ length: dayCount }, (_, j) => (
-                                        <View
-                                            key={`square-${item._id}-${j}`} // Her kareye benzersiz key eklendi
-                                            style={[
-                                                styles.squares,
-                                                { backgroundColor: j < currentProgress ? colors.purple : colors.white }
-                                            ]}
-                                        />
-                                    ))}
-                                </View>
-                                <TouchableOpacity onPress={() => handleButtonPress(item._id)}>
-                                    <View style={styles.button}>
-                                        <Image style={{ height: 28, width: 28, tintColor: colors.white }}
-                                            source={require('../../../assets/images/up.png')} />
-
-                                    </View>
-                                </TouchableOpacity>
+            {data.map((item) => {
+                const dayCount = item.habitDay;
+                const currentProgress = progress[item._id] || 0; // Her alışkanlık için ayrı ilerleme durumu
+                return (
+                    <View style={styles.container} key={item._id}>
+                        <View style={{ flexDirection: 'row' }}>
+                            <TouchableOpacity style={{ alignSelf: 'center', height: 32, marginRight: 4, justifyContent: 'center' }} onPress={() => goToEditPage(item._id, item.habitTitle, item.habitDesc, item.habitDay)}>
+                                <Image style={{ height: 22, width: 22, tintColor: colors.purple, alignSelf: 'center', marginRight: 8 }}
+                                    source={require('../../../assets/icons/edit.png')} />
+                            </TouchableOpacity>
+                            {item.habitDesc ? <View style={styles.innerCont}>
+                                <Text style={styles.title}>{item.habitTitle}</Text>
+                                <Text style={styles.desc}>{item.habitDesc}</Text>
+                            </View> : <View style={styles.innerCont}>
+                                <Text style={styles.title}>{item.habitTitle}</Text>
                             </View>
-                        );
-                    }))}
+                            }
+                            <View>
+                                <Text style={styles.day}>{dayCount < currentProgress ? dayCount : currentProgress}/{dayCount}</Text>
+                            </View>
+                        </View>
+                        <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 12, marginLeft: -2 }}>
+                            {Array.from({ length: dayCount }, (_, j) => (
+                                <View
+                                    key={`square-${item._id}-${j}`} // Her kareye benzersiz key eklendi
+                                    style={[
+                                        styles.squares,
+                                        { backgroundColor: j < currentProgress ? colors.purple : colors.white }
+                                    ]}
+                                />
+                            ))}
+                        </View>
+                        <Modal
+                            animationType="slide"
+                            transparent={true}
+                            visible={modalVisible}
+                            onRequestClose={() => closeModal()}
+                        >
+                            <View style={styles.modalBackground}>
+                                <View style={styles.modalContent}>
+                                <Text style={styles.modalTitle}>Tebrikler!</Text>
+                                    <Text style={styles.modalText}>Sen artık sadece bir hedef koyan değil, onu alışkanlığa dönüştüren birisin.</Text>
+                                    <Text style={styles.modalText}>Peki şimdi sırada ne var?</Text>
+                                    <TouchableOpacity onPress={() => closeModal()}>
+                                              <View style={styles.addButton}>
+                                                <Text style={styles.addButtonText}>
+                                                  Devam Et!
+                                                </Text>
+                                              </View>
+                                            </TouchableOpacity>
+                                </View>
+                            </View>
+                        </Modal>
+                        <TouchableOpacity onPress={() => handleButtonPress(item._id)}>
+                            <View style={styles.button}>
+                                <Image style={{ height: 28, width: 28, tintColor: colors.white }}
+                                    source={require('../../../assets/images/up.png')} />
+                            </View>
+                        </TouchableOpacity>
+
+                    </View>
+                );
+            })}
         </View>
     );
 }

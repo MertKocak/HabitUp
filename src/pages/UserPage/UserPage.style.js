@@ -6,59 +6,76 @@ const windowHeight = Dimensions.get('window').height;
 
 export default StyleSheet.create({
     body: {
-        padding: 16,
-        paddingTop: 0,
         backgroundColor: colors.black1,
         flex: 1,
         justifyContent: "flex-start",
-        alignItems: "center",
-        flexDirection: "column"
+        flexDirection: "column",
+        alignItems: "center"
     },
     title: {
+        color: colors.white,
         fontSize: 14,
-        color: colors.purple,
         fontFamily: "Manrope-Bold",
-        alignSelf: "center",
+        
+    },
+    innerCont: {
+        flexDirection: 'column',
+        maxWidth: windowWidth - 88,
+        flex: 1,
+        marginBottom: 2,
+        justifyContent: "center",
+    },
+    container: {
+        backgroundColor: colors.black2,
+        marginTop: 12,
+        width: windowWidth - 42,
+        borderRadius: 8,
+        padding: 16,
+        marginLeft: 12,
+        paddingLeft: 20,
+        paddingRight: 20,
+        borderColor: colors.gray,
+        borderWidth: 0.5,
+        flexDirection: "column"
+    },
+    desc: {
+        color: colors.white,
+        fontSize: 12,
+        fontFamily: "Manrope-ExtraLight",
+        marginTop: 2,
+        paddingRight: 20,
+    },
+    day: {
+        color: colors.white,
+        fontSize: 14,
+        fontFamily: "Manrope-Medium",
+        marginLeft: 8,
+        textAlignVertical: "center",
+        flex: 1
+    },
+    squares: {
+        width: 16,
+        height: 16,
+        borderRadius: 2,
+        backgroundColor: colors.white,
+        margin: 2,
+    },
+    button: {
+        backgroundColor: colors.purple,
+        marginTop: 16,
+        marginBottom: 4,
+        height: 40,
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: 8,
+        flexDirection: "row",
+    },
+    buttonText: {
+        color: colors.white,
+        textAlign: "center",
+        fontFamily: "Manrope-Bold",
+        fontSize: 12,
+        marginLeft: 6,
         marginBottom: 2,
     },
-    input: {
-        marginTop: 16,
-        height: 54,
-        paddingBottom: 2,
-        backgroundColor: colors.white,
-        borderRadius: 6,
-        width: windowWidth - 32,
-        marginLeft: 16,
-        marginRight: 16,
-        fontSize: 14,
-    },
-    addButton: {
-        marginTop: 32,
-        backgroundColor: colors.purple,
-        height: 48,
-        width: windowWidth - 32,
-        justifyContent: "center",
-        borderRadius: 8,
-    },
-    addButtonText: {
-        textAlign: "center",
-        textAlignVertical: "center",
-        fontSize: 14,
-        color: colors.white,
-        fontWeight: "bold"
-    },
-    registerText: {
-        fontSize: 12,
-        color: colors.purple,
-        marginLeft: 4,
-        marginTop: 16
-
-    },
-    text: {
-        fontSize: 12,
-        color: colors.white,
-        marginRight: 4,
-        marginTop: 16
-    }
-
 })

@@ -13,12 +13,14 @@ export default function HabitEditPage({ navigation, route }) {
   const [habitTitle, sethabitTitle] = React.useState(title);
   const [habitDesc, sethabitDesc] = React.useState(desc);
   const [habitDay, sethabitDay] = React.useState(day);
+  const [habitIsDone, sethabitIsDone] = React.useState(false);
 
   function handleSubmit(id) {
     const habitData = {
       habitTitle,
       habitDesc,
       habitDay,
+      habitIsDone,
     };
     axios
       .put(`https://habitup-backend.onrender.com/habit/${id}`, habitData)

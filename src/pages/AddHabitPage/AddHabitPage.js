@@ -13,6 +13,7 @@ export default function AddHabitPage({ navigation }) {
   const [habitTitle, sethabitTitle] = React.useState("");
   const [habitDesc, sethabitDesc] = React.useState("");
   const [habitDay, sethabitDay] = React.useState(0);
+  const [habitIsDone, sethabitIsDone] = React.useState(false);
   const [userdata, setUserdata] = useState('');
 
   useEffect(() => {
@@ -38,6 +39,7 @@ export default function AddHabitPage({ navigation }) {
       habitTitle,
       habitDesc,
       habitDay,
+      habitIsDone,
       userId,
     };
     axios.post("https://habitup-backend.onrender.com/habit", habitData).then(ToastAndroid.show('Alışkanlık eklendi!', ToastAndroid.SHORT)).catch(e => console.log(e));
@@ -79,7 +81,7 @@ export default function AddHabitPage({ navigation }) {
       />
       <TextInput
         style={styles.input}
-        placeholder="Alışkanlık Açıklaması"
+        placeholder="Alışkanlık Açıklaması (İsteğe Bağlı)"
         placeholderTextColor={colors.gray}
         cursorColor={colors.black2}
         value={habitDesc}

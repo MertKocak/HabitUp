@@ -29,7 +29,9 @@ export default function HomePage({ navigation, route }) {
         }
       });
       try {
-        const response = await axios.get(`https://habitup-backend.onrender.com/habit/${userdata._id}`);
+        const response = await axios.get(`https://habitup-backend.onrender.com/habitDone/${userdata._id}`, {
+          params: { userId: userdata._id, habitIsDone: false}
+        });
         const reversedData = await response.data.reverse();
         await setData(reversedData);
         setLoading(false);
@@ -77,11 +79,11 @@ export default function HomePage({ navigation, route }) {
               <ActivityIndicator size="large" color="#B836FC" />
             </View>
           ) : data.length === 0 ? (
-            <View style={{ height: Dimensions.get('window').height, justifyContent: 'center' }}>
+            <View style={{ justifyContent: 'center', height: Dimensions.get("window").height - 168 }}>
               <Text style={{ textAlign: 'center', fontSize: 14, fontFamily: "Manrope-Regular", color: colors.white }}>
                 Başarıya giden yol,
               </Text>
-              <View style={{ flexDirection: "row" ,marginBottom: 180, marginTop: 0}}>
+              <View style={{ flexDirection: "row" , marginTop: 0}}>
                 <Text style={{ textAlign: 'center', fontSize: 14, marginRight: 4, marginTop: 1, fontFamily: "Manrope-Regular", color: colors.white }}>
                   bir
                 </Text>
