@@ -1,4 +1,4 @@
-import { StyleSheet, TextInput, Alert, Text, View, Dimensions, ToastAndroid, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, TextInput, Alert, Text, View, Dimensions, Modal, ToastAndroid, TouchableOpacity, Image } from 'react-native';
 import { CommonActions } from '@react-navigation/native';
 import React, { useState } from 'react';
 import styles from "./HabitEditPage.style";
@@ -15,41 +15,24 @@ export default function HabitEditPage({ navigation, route }) {
   const [habitDay, sethabitDay] = React.useState(day);
   const [habitIsDone, sethabitIsDone] = React.useState(false);
 
-  function handleSubmit(id) {
-    const habitData = {
-      habitTitle,
-      habitDesc,
-      habitDay,
-      habitIsDone,
-    };
-    axios
-      .put(`https://habitup-backend.onrender.com/habit/${id}`, habitData)
-      .then(res => {
-        ToastAndroid.show('Değişiklikler kaydedildi!', ToastAndroid.SHORT);
-        navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [{ name: 'HomePage' }],
-          })
-        ); // Ana sayfaya yönlendirme
-      })
-      .catch(e => console.error("Hata:", e));
-  }
+  const [modalVisibleDay, setModalVisibleDay] = useState(false);
+  const [modalVisibleDelete, setModalVisibleDelete] = useState(false);
+  const [modalVisibleCancel, setModalVisibleCancel] = useState(false);
 
-  function handleDelete(id) {
-    Alert.alert('Alışkanlık silinsin mi?', 'Bu işlem geri alınamaz.', [
-      {
-        text: 'Vazgeç',
-        onPress: () => console.log('Cancel Pressed'),
-        style: 'cancel',
-      },
-      { text: 'Sil', onPress: () => deletefunction() },
-    ]);
-    const deletefunction = () => {
+  function handleSubmit(id) {
+    if (habitDay > 1095) {
+      setModalVisibleDay(true)
+    } else {
+      const habitData = {
+        habitTitle,
+        habitDesc,
+        habitDay,
+        habitIsDone,
+      };
       axios
-        .delete(`https://habitup-backend.onrender.com/habit/${id}`)
+        .put(`https://habitup-backend.onrender.com/habit/${id}`, habitData)
         .then(res => {
-          ToastAndroid.show('Alışkanlık silindi!', ToastAndroid.SHORT);
+          ToastAndroid.show('Değişiklikler kaydedildi!', ToastAndroid.SHORT);
           navigation.dispatch(
             CommonActions.reset({
               index: 0,
@@ -61,41 +44,134 @@ export default function HabitEditPage({ navigation, route }) {
     }
   }
 
+  function handleDelete(id) {
+    setModalVisibleDelete(true)
+    
+  }
+
+  const deletefunction = () => {
+    axios
+      .delete(`https://habitup-backend.onrender.com/habit/${id}`)
+      .then(res => {
+        ToastAndroid.show('Alışkanlık silindi!', ToastAndroid.SHORT);
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{ name: 'HomePage' }],
+          })
+        ); // Ana sayfaya yönlendirme
+      })
+      .catch(e => console.error("Hata:", e));
+  }
+
   const cancelSubmit = () => {
-    Alert.alert('Değişikliklerden vazgeçilsin mi?', 'Yaptığınız değişiklikler kaydedilmeyecek.', [
-      {
-        text: 'Düzenlemeye Devam Et',
-        onPress: () => console.log('Cancel Pressed'),
-        style: 'cancel',
-      },
-      { text: 'Vazgeç', onPress: () => cancelfunction() },
-    ]);
-    const cancelfunction = () => {
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{ name: 'HomePage' }],
-        })
-      ); // Ana sayfaya yönlendirme
-    };
+    setModalVisibleCancel(true)
+    
+  };
+
+  const cancelfunction = () => {
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: 'HomePage' }],
+      })
+    ); // Ana sayfaya yönlendirme
   };
 
   return (
     <View style={styles.body}>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisibleDay}
+        onRequestClose={() => setModalVisibleDay(false)}
+      >
+        <View style={styles.modalBackground}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Alışkanlık Kaydedilemedi!</Text>
+            <Text style={styles.modalText}>Alışkanlık süresi en fazla 1095 gün (3 yıl) olarak belirlenebilir.</Text>
+            <TouchableOpacity onPress={() => setModalVisibleDay(false)}>
+              <View style={styles.addButtonFull}>
+                <Text style={styles.addButtonText}>
+                  Tekrar Dene
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisibleDelete}
+        onRequestClose={() => setModalVisibleDelete(false)}
+      >
+        <View style={styles.modalBackground}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Alışkanlık silinsin mi?</Text>
+            <Text style={styles.modalText}>Bu işlem geri alınamaz.</Text>
+            <View style={{ flexDirection: 'row' }}>
+              <TouchableOpacity onPress={() => setModalVisibleDelete(false)}>
+                <View style={[styles.addButtonHalf, { marginRight: 16,backgroundColor: colors.black2, borderWidth: 0.6, borderColor: colors.gray }]}>
+                  <Text style={styles.addButtonText}>
+                    Vazgeç
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => deletefunction()}>
+                <View style={styles.addButtonHalf}>
+                  <Text style={styles.addButtonText}>
+                    Sil
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisibleCancel}
+        onRequestClose={() => setModalVisibleCancel(false)}
+      >
+        <View style={styles.modalBackground}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Değişikliklerden vazgeçilsin mi?</Text>
+            <Text style={styles.modalText}>Yaptığınız değişiklikler kaydedilmeyecek.</Text>
+            <View style={{ flexDirection: 'row' }}>
+              <TouchableOpacity onPress={() => setModalVisibleCancel(false)}>
+                <View style={[styles.addButtonHalf, { marginRight: 16,backgroundColor: colors.black2, borderWidth: 0.6, borderColor: colors.gray }]}>
+                  <Text style={styles.addButtonText}>
+                    Düzenlemeye dön
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => cancelfunction()}>
+                <View style={styles.addButtonHalf}>
+                  <Text style={styles.addButtonText}>
+                    Vazgeç
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
       <View style={{ backgroundColor: colors.black2, flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 8, marginBottom: 24, width: Dimensions.get('window').width }}>
         <TouchableOpacity onPress=
           {() => navigation.goBack()}>
-          <View style={{ height: 52, paddingHorizontal: 10, width: 52, justifyContent: 'center', alignItems: 'flex-right' }}>
-            <Image style={{ height: 20, width: 20, }}
+          <View style={{ height: 52, width: 52, justifyContent: 'center', alignItems: 'flex-right' }}>
+            <Image style={{ height: 30, width: 30, tintColor: colors.purple }}
               source={require('../../../assets/icons/arrow.png')} />
           </View>
         </TouchableOpacity>
-        <Image style={{ height: 40, width: 108, marginTop: 8 }}
+        <Image style={{ height: 40, width: 96, marginTop: 8 }}
           source={require('../../../assets/images/logo.png')} />
         <TouchableOpacity onPress=
           {() => handleDelete(id)}>
           <View style={{ height: 52, paddingHorizontal: 8, width: 52, justifyContent: 'center', alignItems: 'flex-end' }}>
-            <Image style={{ height: 22, width: 22, tintColor: colors.purple }}
+            <Image style={{ height: 20, width: 20, tintColor: colors.purple }}
               source={require('../../../assets/icons/trash.png')} />
           </View>
         </TouchableOpacity>
@@ -113,7 +189,7 @@ export default function HabitEditPage({ navigation, route }) {
         value={habitTitle}
         onChangeText={habitTitle => sethabitTitle(habitTitle)}
       />
-            <Text style={styles.subtitle}>Alışkanlık Açıklaması</Text>
+      <Text style={styles.subtitle}>Alışkanlık Açıklaması</Text>
 
       <TextInput
         style={styles.input}
@@ -123,7 +199,7 @@ export default function HabitEditPage({ navigation, route }) {
         value={habitDesc}
         onChangeText={habitDesc => sethabitDesc(habitDesc)}
       />
-            <Text style={styles.subtitle}>Alışkanlık Süresi (Gün)</Text>
+      <Text style={styles.subtitle}>Alışkanlık Süresi (Gün)</Text>
 
       <TextInput
         style={styles.input}
@@ -135,7 +211,7 @@ export default function HabitEditPage({ navigation, route }) {
         keyboardType='numeric'
       />
 
-      <View style={{ flexDirection: "row" }}>
+      <View style={{ flexDirection: "row", marginTop: 4 }}>
         <TouchableOpacity onPress={() => cancelSubmit()}>
           <View style={styles.cancelButton}>
             <Text style={styles.cancelButtonText}>
@@ -144,8 +220,8 @@ export default function HabitEditPage({ navigation, route }) {
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => handleSubmit(id)}>
-          <View style={styles.addButton}>
-            <Text style={styles.addButtonText}>
+          <View style={styles.saveButton}>
+            <Text style={styles.saveButtonText}>
               Kaydet
             </Text>
           </View>

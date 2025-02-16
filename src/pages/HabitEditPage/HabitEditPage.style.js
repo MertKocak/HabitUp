@@ -43,16 +43,16 @@ export default StyleSheet.create({
         fontFamily: "Manrope-Medium",
         color: colors.black2,
     },
-    addButton: {
-        marginTop:16,
+    saveButton: {
+        marginTop: 16,
         backgroundColor: colors.purple,
         height: 48,
-        width: windowWidth / 2 - 24,
+        width: windowWidth / 2 - 26,
         justifyContent: "center",
         borderRadius: 8,
-        marginLeft: 8,
+        marginLeft: 10,
     },
-    addButtonText: {
+    saveButtonText: {
         textAlign: "center",
         textAlignVertical: "center",
         fontSize: 14,
@@ -61,16 +61,71 @@ export default StyleSheet.create({
         marginBottom: 2,
     },
     cancelButton: {
-        marginTop:16,
+        marginTop: 16,
         backgroundColor: colors.black2,
         height: 48,
-        marginRight: 8,
-        width: windowWidth / 2 - 24,
+        marginRight: 10,
+        width: windowWidth / 2 - 26,
         justifyContent: "center",
         borderRadius: 8,
-        
+        borderWidth: 0.6,
+        borderColor: colors.gray
+
     },
     cancelButtonText: {
+        textAlign: "center",
+        textAlignVertical: "center",
+        fontSize: 14,
+        color: colors.white,
+        fontFamily: "Manrope-Bold",
+        marginBottom: 2,
+    },
+    modalBackground: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "rgba(0, 0, 0, 0.7)", // Saydam arka plan
+    },
+    modalContent: {
+        width: windowWidth - 32,
+        padding: 20,
+        backgroundColor: colors.black1,
+        borderRadius: 12,
+        alignItems: "center",
+        borderWidth: 0.8,
+        borderColor: colors.purple
+    },
+    modalText: {
+        fontSize: 14,
+        marginBottom: 8,
+        color: colors.white,
+        fontFamily: "Manrope-Medium",
+        textAlign: "center"
+    },
+    modalTitle: {
+        fontSize: 16,
+        marginBottom: 10,
+        color: colors.purple,
+        fontFamily: "Manrope-Bold",
+        textAlign: "center"
+    },
+    addButtonFull: {
+        marginTop: 16,
+        backgroundColor: colors.purple,
+        height: 48,
+        width: windowWidth - 72,
+        justifyContent: "center",
+        borderRadius: 8,
+    },
+    addButtonHalf: {
+        marginTop: 16,
+        backgroundColor: colors.purple,
+        height: 48,
+        width: (windowWidth - 88) / 2,
+        justifyContent: "center",
+        borderRadius: 8,
+    },
+    addButtonText: {
         textAlign: "center",
         textAlignVertical: "center",
         fontSize: 14,

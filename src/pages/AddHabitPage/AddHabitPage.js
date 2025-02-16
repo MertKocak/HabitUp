@@ -1,4 +1,4 @@
-import { StyleSheet,TextInput, Alert, Image, Text, View, Dimensions, TouchableOpacity, ToastAndroid } from 'react-native';
+import { StyleSheet, TextInput, Alert, Image, Text, View, Dimensions, Modal, TouchableOpacity, ToastAndroid } from 'react-native';
 import { CommonActions } from '@react-navigation/native';
 import React, { useState, useEffect } from 'react';
 //import { TextInput } from 'react-native-paper';
@@ -16,12 +16,14 @@ export default function AddHabitPage({ navigation }) {
   const [habitIsDone, sethabitIsDone] = React.useState(false);
   const [userdata, setUserdata] = useState('');
 
+  const [modalVisibleDay, setModalVisibleDay] = useState(false);
+
   useEffect(() => {
     const fetchData = async () => {
       const token = await AsyncStorage.getItem("token");
       await axios.post('https://habitup-backend.onrender.com/userdata', { token: token }).then(res => setUserdata(res.data.data)).catch(error => {
         if (error.response) {
-          alert('Sunucu hatası: ' + error.response.data ? error.response.data : "Sunucuya bağlanılamıyor." );
+          alert('Sunucu hatası: ' + error.response.data ? error.response.data : "Sunucuya bağlanılamıyor.");
         } else {
           alert('Ağ bağlantı hatası: ' + error.message ? error.message : "Lütfen ağ bağlantınızı kontrol ediniz.");
         }
@@ -31,37 +33,62 @@ export default function AddHabitPage({ navigation }) {
     console.log("KULLANICI ADI: " + userdata._id);
   }, [userdata._id]);
 
-  
+
 
   const handleSubmit = async () => {
-    const userId = userdata._id;
-    const habitData = {
-      habitTitle,
-      habitDesc,
-      habitDay,
-      habitIsDone,
-      userId,
-    };
-    axios.post("https://habitup-backend.onrender.com/habit", habitData).then(ToastAndroid.show('Alışkanlık eklendi!', ToastAndroid.SHORT)).catch(e => console.log(e));
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [{ name: 'HomePage' }],
-      })
-    ); // Ana sayfaya yönlendirme
+    if (habitDay > 1095) {
+      setModalVisibleDay(true)
+    } else {
+      const userId = userdata._id;
+      const habitData = {
+        habitTitle,
+        habitDesc,
+        habitDay,
+        habitIsDone,
+        userId,
+      };
+      axios.post("https://habitup-backend.onrender.com/habit", habitData).then(ToastAndroid.show('Alışkanlık eklendi!', ToastAndroid.SHORT)).catch(e => console.log(e));
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'HomePage' }],
+        })
+      ); // Ana sayfaya yönlendirme
+    }
+
   }
 
   return (
     <View style={styles.body}>
+      <Modal
+              animationType="fade"
+              transparent={true}
+              visible={modalVisibleDay}
+              onRequestClose={() => setModalVisibleDay(false)}
+            >
+              <View style={styles.modalBackground}>
+                <View style={styles.modalContent}>
+                  <Text style={styles.modalTitle}>Alışkanlık Kaydedilemedi!</Text>
+                  <Text style={styles.modalText}>Alışkanlık süresi en fazla 1095 gün (3 yıl) olarak belirlenebilir.</Text>
+                  <TouchableOpacity onPress={() => setModalVisibleDay(false)}>
+                    <View style={styles.addButtonFull}>
+                      <Text style={styles.addButtonText}>
+                        Tekrar Dene
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </Modal>
       <View style={{ backgroundColor: colors.black2, flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 8, marginBottom: 24, width: Dimensions.get('window').width }}>
         <TouchableOpacity onPress=
           {() => navigation.goBack()}>
-          <View style={{ height: 52, paddingHorizontal: 24, width: 52, justifyContent: 'center', alignItems: 'flex-end' }}>
-            <Image style={{ height: 20, width: 20, tintColor: colors.purple }}
+          <View style={{ height: 52, paddingHorizontal: 22, width: 52, justifyContent: 'center', alignItems: 'flex-end' }}>
+            <Image style={{ height: 30, width: 30, tintColor: colors.purple }}
               source={require('../../../assets/icons/arrow.png')} />
           </View>
         </TouchableOpacity>
-        <Image style={{ height: 40, width: 108, marginTop: 8 }}
+        <Image style={{ height: 40, width: 96, marginTop: 8 }}
           source={require('../../../assets/images/logo.png')} />
         <TouchableOpacity onPress=
           {() => null}>
@@ -96,14 +123,14 @@ export default function AddHabitPage({ navigation }) {
         onChangeText={habitDay => sethabitDay(habitDay)}
         keyboardType='numeric'
       />
-        <TouchableOpacity onPress={() => handleSubmit()}>
-          <View style={styles.addButton}>
-            <Text style={styles.addButtonText}>
-              Ekle
-            </Text>
-          </View>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity onPress={() => handleSubmit()}>
+        <View style={styles.addButton}>
+          <Text style={styles.AddButtonText}>
+            Ekle
+          </Text>
+        </View>
+      </TouchableOpacity>
+    </View>
   );
 }
 

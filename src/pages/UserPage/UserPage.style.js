@@ -28,9 +28,10 @@ export default StyleSheet.create({
     container: {
         backgroundColor: colors.black2,
         marginTop: 12,
-        width: windowWidth - 42,
+        width: windowWidth - 40,
         borderRadius: 8,
         padding: 16,
+        marginRight: 6,
         marginLeft: 12,
         paddingLeft: 20,
         paddingRight: 20,
@@ -76,6 +77,59 @@ export default StyleSheet.create({
         fontFamily: "Manrope-Bold",
         fontSize: 12,
         marginLeft: 6,
+        marginBottom: 2,
+    },
+    modalBackground: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "rgba(0, 0, 0, 0.7)", // Saydam arka plan
+      },
+      modalContent: {
+        width: windowWidth - 32,
+        padding: 20,
+        backgroundColor: colors.black1,
+        borderRadius: 12,
+        alignItems: "center",
+        borderWidth: 0.8,
+        borderColor: colors.purple
+      },
+      modalText: {
+        fontSize: 14,
+        marginBottom: 8,
+        color: colors.white,
+        fontFamily: "Manrope-Medium",
+        textAlign: "center"
+      },
+      modalTitle: {
+        fontSize: 16,
+        marginBottom: 10,
+        color: colors.purple,
+        fontFamily: "Manrope-Bold",
+        textAlign: "center"
+      },
+      addButtonFull: {
+        marginTop:16,
+        backgroundColor: colors.purple,
+        height: 48,
+        width: windowWidth - 72,
+        justifyContent: "center",
+        borderRadius: 8,
+    },
+    addButtonHalf: {
+        marginTop:16,
+        backgroundColor: colors.purple,
+        height: 48,
+        width: (windowWidth - 88) / 2,
+        justifyContent: "center",
+        borderRadius: 8,
+    },
+    addButtonText: {
+        textAlign: "center",
+        textAlignVertical: "center",
+        fontSize: 14,
+        color: colors.white,
+        fontFamily: "Manrope-Bold",
         marginBottom: 2,
     },
 })

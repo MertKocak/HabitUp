@@ -74,11 +74,13 @@ export default StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "rgba(0, 0, 0, 0.5)", // Saydam arka plan
+        backgroundColor: "rgba(0, 0, 0, 0.7)", // Saydam arka plan
       },
       modalContent: {
         width: windowWidth - 32,
         padding: 20,
+        paddingLeft: 24,
+        paddingRight: 24,
         backgroundColor: colors.black1,
         borderRadius: 12,
         alignItems: "center",

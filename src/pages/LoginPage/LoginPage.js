@@ -1,4 +1,4 @@
-import { StyleSheet, Text, Button, TextInput, View, Dimensions, TouchableOpacity, Image, Alert, ToastAndroid } from 'react-native';
+import { StyleSheet, Text, Button, TextInput, View, Dimensions, Modal, TouchableOpacity, Image, Alert, ToastAndroid } from 'react-native';
 import { CommonActions } from '@react-navigation/native';
 import React, { useState } from 'react';
 //import { TextInput } from 'react-native-paper';
@@ -17,6 +17,11 @@ export default function LoginPage({ navigation }) {
   const [password, setPassword] = React.useState("");
   const [secureText, setSecureText] = useState(true);
 
+  const [modalVisibleEmail, setModalVisibleEmail] = useState(false);
+  const [modalVisiblePassword, setModalVisiblePassword] = useState(false);
+  const [modalVisibleError, setModalVisibleError] = useState(false);
+  const [modalVisibleNetwork, setModalVisibleNetwork] = useState(false);
+
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
@@ -24,13 +29,13 @@ export default function LoginPage({ navigation }) {
 
   const handleLogin = async (email, password) => {
     if (!validateEmail(email)) {
-          Alert.alert('Geçersiz E-posta!', 'Lütfen geçerli bir e-posta adresi giriniz.');
-          return;
-        }
-        if (password.length < 6) {
-          Alert.alert('Geçersiz Şifre!', 'Şifreniz en az 6 karakter olmalıdır.');
-          return;
-        }
+      setModalVisibleEmail(true);
+      return;
+    }
+    if (password.length < 6) {
+      setModalVisiblePassword(true);
+      return;
+    }
     try {
       var email = email.toLowerCase();
       const response = await axios.post('https://habitup-backend.onrender.com/login', {
@@ -52,16 +57,95 @@ export default function LoginPage({ navigation }) {
           })
         );
       } else if (response.data.status === "userNotFound") {
-        Alert.alert('Giriş Yapılamadı!', 'E-posta adresi ve/veya şifre yanlış.');
+        setModalVisibleError(true)
       }
     } catch (error) {
-      console.error(error); // Hata çıktısını görmek için logla
-      Alert.alert('Giriş Yapılamadı!', 'E-posta adresi ve/veya şifre yanlış.');
+      setModalVisibleNetwork(true)
     }
   };
 
   return (
     <View style={styles.body}>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisibleEmail}
+        onRequestClose={() => setModalVisibleEmail(false)}
+      >
+        <View style={styles.modalBackground}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Geçersiz E-posta!</Text>
+            <Text style={styles.modalText}>Lütfen geçerli bir e-posta adresi giriniz.</Text>
+            <TouchableOpacity onPress={() => setModalVisibleEmail(false)}>
+              <View style={styles.addButton}>
+                <Text style={styles.addButtonText}>
+                  Tekrar Dene!
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisiblePassword}
+        onRequestClose={() => setModalVisiblePassword(false)}
+      >
+        <View style={styles.modalBackground}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Geçersiz Şifre!</Text>
+            <Text style={styles.modalText}>Şifreniz en az 6 karakter olmalıdır.</Text>
+            <TouchableOpacity onPress={() => setModalVisiblePassword(false)}>
+              <View style={styles.addButton}>
+                <Text style={styles.addButtonText}>
+                  Tekrar Dene!
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisibleError}
+        onRequestClose={() => setModalVisibleError(false)}
+      >
+        <View style={styles.modalBackground}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Giriş Yapılamadı!</Text>
+            <Text style={styles.modalText}>Girmiş olduğunuz e-posta adresine sahip bir kullanıcı bulunamadı</Text>
+            <TouchableOpacity onPress={() => setModalVisibleError(false)}>
+              <View style={styles.addButton}>
+                <Text style={styles.addButtonText}>
+                  Tekrar Dene!
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisibleNetwork}
+        onRequestClose={() => setModalVisibleNetwork(false)}
+      >
+        <View style={styles.modalBackground}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Giriş Yapılamadı!</Text>
+            <Text style={styles.modalText}>E-posta adresi ve/veya şifre yanlış.</Text>
+            <TouchableOpacity onPress={() => setModalVisibleNetwork(false)}>
+              <View style={styles.addButton}>
+                <Text style={styles.addButtonText}>
+                  Tekrar Dene!
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
       <Image style={{ height: 120, width: 200, marginTop: 20 }}
         source={require('../../../assets/images/logo.png')} />
       <Text style={styles.title}>Giriş Yap!</Text>
@@ -89,8 +173,8 @@ export default function LoginPage({ navigation }) {
         </TouchableOpacity>
       </View>
       <TouchableOpacity onPress={() => handleLogin(email, password)}>
-        <View style={styles.addButton}>
-          <Text style={styles.addButtonText}>
+        <View style={styles.loginButton}>
+          <Text style={styles.loginButtonText}>
             Giriş Yap!
           </Text>
         </View>
