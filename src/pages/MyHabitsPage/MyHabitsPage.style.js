@@ -5,18 +5,17 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 export default StyleSheet.create({
-
-    container: {
-        backgroundColor: colors.black2,
-        margin: 8,
-        width: windowWidth - 32,
-        borderRadius: 8,
-        padding: 16,
-        paddingLeft: 20,
-        paddingRight: 20,
-        borderColor: colors.gray,
-        borderWidth: 0.5,
-        flexDirection: "column"
+    body: {
+        backgroundColor: colors.black1,
+        flex: 1,
+        justifyContent: "flex-start",
+        flexDirection: "column",
+        alignItems: "center"
+    },
+    title: {
+        color: colors.white,
+        fontSize: 14,
+        fontFamily: "Manrope-Bold",
     },
     innerCont: {
         flexDirection: 'column',
@@ -24,13 +23,20 @@ export default StyleSheet.create({
         flex: 1,
         marginBottom: 2,
         justifyContent: "center",
-
     },
-    title: {
-        color: colors.white,
-        fontSize: 14,
-        fontFamily: "Manrope-Bold",
-        marginTop: -2
+    container: {
+        backgroundColor: colors.black2,
+        marginTop: 12,
+        width: windowWidth - 40,
+        borderRadius: 8,
+        padding: 16,
+        marginRight: 6,
+        marginLeft: 12,
+        paddingLeft: 20,
+        paddingRight: 20,
+        borderColor: colors.gray,
+        borderWidth: 0.5,
+        flexDirection: "column"
     },
     desc: {
         color: colors.white,
@@ -41,9 +47,11 @@ export default StyleSheet.create({
     },
     day: {
         color: colors.white,
-        fontSize: 12,
+        fontSize: 14,
         fontFamily: "Manrope-Medium",
         marginLeft: 8,
+        textAlignVertical: "center",
+        flex: 1
     },
     squares: {
         width: 16,
@@ -79,8 +87,6 @@ export default StyleSheet.create({
       modalContent: {
         width: windowWidth - 32,
         padding: 20,
-        paddingLeft: 24,
-        paddingRight: 24,
         backgroundColor: colors.black1,
         borderRadius: 12,
         alignItems: "center",
@@ -101,11 +107,19 @@ export default StyleSheet.create({
         fontFamily: "Manrope-Bold",
         textAlign: "center"
       },
-      addButton: {
+      addButtonFull: {
         marginTop:16,
         backgroundColor: colors.purple,
         height: 44,
         width: windowWidth - 72,
+        justifyContent: "center",
+        borderRadius: 8,
+    },
+    addButtonHalf: {
+        marginTop:16,
+        backgroundColor: colors.purple,
+        height: 44,
+        width: (windowWidth - 88) / 2,
         justifyContent: "center",
         borderRadius: 8,
     },

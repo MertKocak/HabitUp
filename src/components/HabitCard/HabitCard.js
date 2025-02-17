@@ -240,8 +240,8 @@ export default function HabitCard({ navigation, data }) {
                             <View style={styles.modalBackground}>
                                 <View style={styles.modalContent}>
                                     <Text style={styles.modalTitle}>Harika Gidiyorsun! Devam Et! 🌟</Text>
-                                    <Text style={styles.modalText}>Çoğu insan bu seviyeye bile ulaşamazken sen harika bir istikrar gösterdin! Küçük sapmalar olabilir ama önemli olan devam etmek.</Text>
-                                    <Text style={styles.modalText}>Yolun açık, sen bu işi başarabilirsin!</Text>
+                                    <Text style={styles.modalText}>Disiplin ve kararlılıkla ilerliyorsun! Küçük sapmalar olabilir ama önemli olan devam etmek.</Text>
+                                    <Text style={styles.modalText}>Sen bunu başarabilirsin!</Text>
                                     <TouchableOpacity onPress={() => closeModal70()}>
                                         <View style={styles.addButton}>
                                             <Text style={styles.addButtonText}>

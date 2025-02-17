@@ -51,8 +51,9 @@ export default function HomePage({ navigation, route }) {
     };
     const checkFirstLaunch = async () => {
       const firstLaunch = await AsyncStorage.getItem('firstLaunch');
-      if (firstLaunch === null) {
+      if (firstLaunch === true) {
         setIsFirstLaunch(true);
+        setModalVisible(true);
         await AsyncStorage.setItem('firstLaunch', 'false');
       }
     };
@@ -66,7 +67,7 @@ export default function HomePage({ navigation, route }) {
   };
 
   return (
-    <ScrollView style={{ backgroundColor: colors.black1 }}>
+    <ScrollView showsVerticalScrollIndicator={false} style={{ backgroundColor: colors.black1 }}>
       <SafeAreaView style={styles.body}>
         <View style={{ backgroundColor: colors.black2, flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 8, marginBottom: 4, width: Dimensions.get('window').width }}>
           <TouchableOpacity onPress=
@@ -155,3 +156,5 @@ export default function HomePage({ navigation, route }) {
     </ScrollView>
   );
 }
+
+export default HomePage;

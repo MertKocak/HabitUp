@@ -7,7 +7,12 @@ import HomePage from '../HomePage';
 import colors from '../../colors';
 import { all, default as axios } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { mt } from 'date-fns/locale';
+import { check, PERMISSIONS, RESULTS } from 'react-native-permissions';
+import { request } from 'react-native-permissions';
+import Notifications from '../../../Notifications';
+import DatePicker from 'react-native-date-picker';
+import { format } from "date-fns";
+import { tr } from "date-fns/locale"; // Türkçe dil desteği
 
 export default function UserPage({ navigation, progressData }) {
 
@@ -17,18 +22,13 @@ export default function UserPage({ navigation, progressData }) {
   const [doneData, setdoneData] = useState([]);
   const [data, setdata] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
-
+  const [modalVisibleDate, setModalVisibleDate] = useState(false);
 
   useEffect(() => {
     const fetchDataAll = async () => {
       const token = await AsyncStorage.getItem("token");
-      await axios.post('https://habitup-backend.onrender.com/userdata', { token: token }).then(res => setUserdata(res.data.data));
       try {
-        const responseAll = await axios.get(`https://habitup-backend.onrender.com/habitDone/${userdata._id}`, {
-          params: { userId: userdata._id, habitIsDone: false }
-        });
-        const reversedDataAll = await responseAll.data.reverse();
-        await setallData(reversedDataAll);
+        await axios.post('https://habitup-backend.onrender.com/userdata', { token: token }).then(res => setUserdata(res.data.data));
       } catch (error) {
         if (error.response) {
           console.error('Response Error:', error.response.data);
@@ -38,48 +38,32 @@ export default function UserPage({ navigation, progressData }) {
         }
       }
     };
-    const fetchDataDone = async () => {
-      const token = await AsyncStorage.getItem("token");
-      await axios.post('https://habitup-backend.onrender.com/userdata', { token: token }).then(res => setUserdata(res.data.data));
-      try {
-        const responseDone = await axios.get(`https://habitup-backend.onrender.com/habitDone/${userdata._id}`, {
-          params: { userId: userdata._id, habitIsDone: true }
-        });
-        const reversedDataDone = await responseDone.data.reverse();
-        await setdoneData(reversedDataDone);
-      } catch (error) {
-        if (error.response) {
-          console.error('Response Error:', error.response.data);
-          console.error('Status Code:', error.response.status);
-        } else {
-          console.error('Error:', error.message);
+    const requestPermission = async () => {
+      const checkPermission = await checkNotificationPermission();
+      if (checkPermission !== RESULTS.GRANTED) {
+        const request = await requestNotificationPermission();
+        if (request !== RESULTS.GRANTED) {
         }
       }
     };
-    const fetchAllDataLength = async () => {
-      const token = await AsyncStorage.getItem("token");
-      await axios.post('https://habitup-backend.onrender.com/userdata', { token: token }).then(res => setUserdata(res.data.data));
-      try {
-        const response = await axios.get(`https://habitup-backend.onrender.com/habitAll/${userdata._id}`);
-        const reservedData = await response.data.reverse();
-        await setdata(reservedData);
-      } catch (error) {
-        if (error.response) {
-          console.error('Response Error:', error.response.data);
-          console.error('Status Code:', error.response.status);
-        } else {
-          console.error('Error:', error.message);
-        }
-      }
-    };
-    fetchAllDataLength();
+    requestPermission();
     fetchDataAll();
-    fetchDataDone();
-  }, [userdata._id, allData, doneData]);
+  }, []);
+
+  const requestNotificationPermission = async () => {
+    const result = await request(PERMISSIONS.ANDROID.POST_NOTIFICATIONS);
+    return result;
+  };
+
+  const checkNotificationPermission = async () => {
+    const result = await check(PERMISSIONS.ANDROID.POST_NOTIFICATIONS);
+    return result;
+  };
+
+
 
   const handleLogout = async () => {
     setModalVisible(true)
-
   };
 
   const functionLogout = async () => {
@@ -93,159 +77,36 @@ export default function UserPage({ navigation, progressData }) {
     );
   }
 
-  const renderAllItem = ({ item }) => {
-    const dayCount = item.habitDay;
-    return (
-      <TouchableOpacity onPress={() => handleDelete(item._id, 2)}>
-        <View
-          style={[styles.container, { zIndex: 2, marginLeft: 0, width: Dimensions.get('window').width - 82, alignSelf: "flex-start", borderWidth: 0.5, backgroundColor: colors.black2 }]}
-          key={item._id}
-        >
-          <View style={{ flexDirection: "row" }}>
-            {item.habitDesc ?
-              <View style={styles.innerCont}>
-                <Text style={[styles.title, { marginTop: -2, color: colors.white }]}>{item.habitTitle}</Text>
-                <Text style={styles.desc}>{item.habitDesc}</Text>
-              </View> :
-              <View style={styles.innerCont}>
-                <Text style={[styles.title, { marginTop: -2, color: colors.white }]}>{item.habitTitle}</Text>
-              </View>
-            }
-            <View>
-              <Text style={styles.day}>{dayCount}</Text>
-            </View>
-          </View>
-        </View>
-      </TouchableOpacity>
-    );
+  const [date, setDate] = useState(new Date())
+
+  const showToast = (title) => {
+    ToastAndroid.show("Hatırlatıcı kaydedildi: " + title, ToastAndroid.SHORT);
   };
 
-  const renderDoneItem = ({ item }) => {
-    const dayCount = item.habitDay;
-    return (
-      <TouchableOpacity onPress={() => handleDelete(item._id, 1)}>
-        <View
-          style={[styles.container, { zIndex: 2, marginLeft: 2, width: Dimensions.get('window').width - 82, alignSelf: "flex-start", borderWidth: 0.5, backgroundColor: colors.black2 }]}
-          key={item._id}
-        >
-          <View style={{ flexDirection: "row" }}>
-            {item.habitDesc ?
-              <View style={styles.innerCont}>
-                <Text style={[styles.title, { marginTop: -2, color: colors.white }]}>{item.habitTitle}</Text>
-                <Text style={styles.desc}>{item.habitDesc}</Text>
-              </View> :
-              <View style={styles.innerCont}>
-                <Text style={[styles.title, { marginTop: -2, color: colors.white }]}>{item.habitTitle}</Text>
-              </View>
-            }
-            <View>
-              <Text style={styles.day}>{dayCount}</Text>
-            </View>
-          </View>
-        </View>
-      </TouchableOpacity>
+  const handleRemoveNot = (data) => {
+    Notifications.cancelNotification(data);
+    setModalVisibleDate(!modalVisibleDate);
+    ToastAndroid.show("Hatırlatıcı iptal edildi", ToastAndroid.SHORT);
 
-    );
+}
+
+  const openDatepicker = () => {
+    setModalVisibleDate(true);
+  }
+  const closeDatePicker = () => {
+    setModalVisibleDate(false);
+  }
+
+  const setNotification = (title, message) => {
+    setModalVisibleDate(!modalVisibleDate);
+    Notifications.schduleNotification(date, title, message);
+    const dateHM = date;
+    const formattedDate = format(dateHM, 'hh:mm', { locale: tr });
+    showToast(formattedDate);
   };
-
-  const items = [];
-
-  for (let i = 1; i <= 10; i++) {
-    items.push(
-      <View key={i} style={{
-        backgroundColor: (doneData.length * 10) / data.length >= i ? colors.purple : colors.white,
-        width: 24, aspectRatio: 1, flex: 1, marginTop: 0, marginRight: 2, marginLeft: 2, borderRadius: 4
-      }}>
-        {Math.floor((doneData.length * 10) / data.length) === i ? <Text style={{ color: colors.white, fontSize: i === 10 ? 10 : 12, fontFamily: "Manrope-Bold", justifyContent: 'center', textAlign: 'center', flex: 1, textAlignVertical: 'center', marginBottom: 4 }}>%{Math.floor(((doneData.length * 10) / data.length) * 10)}</Text> : null}
-      </View>
-    );
-  }
-
-  const [deleteModalDone, setDeleteModalDone] = useState(false);
-  const [deleteModalCon, setDeleteModalCon] = useState(false);
-  const [selectedItemId, setSelectedItemId] = useState(0);
-
-  const deletefunction = async (id) => {
-    axios
-      .delete(`https://habitup-backend.onrender.com/habit/${id}`)
-      .then(res => {
-        ToastAndroid.show('Alışkanlık silindi!', ToastAndroid.SHORT);
-        navigation.replace("UserPage");
-      })
-      .catch(e => console.error("Hata:", e));
-  }
-
-  function handleDelete(id, number) {
-    if (number === 1) {
-      setSelectedItemId(id);
-      setDeleteModalDone(true);
-    }
-    else if (number === 2) {
-      setSelectedItemId(id);
-      setDeleteModalCon(true);
-    }
-  }
 
   return (
     <View style={styles.body}>
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={deleteModalCon}
-        onRequestClose={() => setDeleteModalCon(false)}
-      >
-        <View style={styles.modalBackground}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Devam eden alışkanlık silinsin mi?</Text>
-            <Text style={styles.modalText}>Bu işlem geri alınamaz.</Text>
-            <View style={{ flexDirection: 'row' }}>
-              <TouchableOpacity onPress={() => setDeleteModalCon(false)}>
-                <View style={[styles.addButtonHalf, { marginRight: 16, backgroundColor: colors.black2, borderWidth: 0.6, borderColor: colors.gray }]}>
-                  <Text style={styles.addButtonText}>
-                    Vazgeç
-                  </Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => deletefunction(selectedItemId)}>
-                <View style={styles.addButtonHalf}>
-                  <Text style={styles.addButtonText}>
-                    Sil
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={deleteModalDone}
-        onRequestClose={() => setDeleteModalDone(false)}
-      >
-        <View style={styles.modalBackground}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Tamamlanmış alışkanlık silinsin mi?</Text>
-            <Text style={styles.modalText}>Bu işlem geri alınamaz.</Text>
-            <View style={{ flexDirection: 'row' }}>
-              <TouchableOpacity onPress={() => setDeleteModalDone(false)}>
-                <View style={[styles.addButtonHalf, { marginRight: 16, backgroundColor: colors.black2, borderWidth: 0.6, borderColor: colors.gray }]}>
-                  <Text style={styles.addButtonText}>
-                    Vazgeç
-                  </Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => deletefunction(selectedItemId)}>
-                <View style={styles.addButtonHalf}>
-                  <Text style={styles.addButtonText}>
-                    Sil
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
       <Modal
         animationType="fade"
         transparent={true}
@@ -275,6 +136,40 @@ export default function UserPage({ navigation, progressData }) {
           </View>
         </View>
       </Modal>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisibleDate}
+        onRequestClose={() => {
+          setModalVisibleDate(!modalVisibleDate);
+        }}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalViewDate}>
+            <View style={{ alignItems: 'flex-end', height: 28 }}>
+              <TouchableOpacity
+                style={styles.buttonClose}
+                onPress={closeDatePicker}>
+                <Image style={styles.closeButton} source={require("../../../assets/icons/cross.png")} />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.dateContainer}>
+              <DatePicker androidVariant='iosClone' style={styles.datePicker} is24hourSource='device' fadeToColor='#D9D9D9' textColor='red' mode='time' date={date} onDateChange={setDate} />
+            </View>
+            <View style = {{flexDirection: 'row', justifyContent: 'space-between', marginHorizontal:18}}>
+              <TouchableOpacity
+                style={[styles.buttonOpen, {backgroundColor: colors.black2, borderWidth: 0.6, borderColor: colors.gray}]}
+                onPress={() => handleRemoveNot(data)}>
+                <Text style={styles.textStyle}>İptal Et</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.buttonOpen}
+                onPress={() => setNotification("İlaç Hatırlatıcısı", data)}>
+                <Text style={styles.textStyle}>Kaydet</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
       <View style={{ backgroundColor: colors.black2, flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 8, marginBottom: 24, width: Dimensions.get('window').width }}>
         <TouchableOpacity onPress=
           {() => navigation.goBack()}>
@@ -283,110 +178,58 @@ export default function UserPage({ navigation, progressData }) {
               source={require('../../../assets/icons/arrow.png')} />
           </View>
         </TouchableOpacity>
-        <Image style={{ height: 40, width: 108, marginTop: 8 }}
+        <Image style={{ height: 40, width: 96, marginTop: 8 }}
           source={require('../../../assets/images/logo.png')} />
-        <TouchableOpacity onPress=
-          {() => handleLogout()}>
+        <TouchableOpacity onPress={() => null}>
           <View style={{ height: 52, paddingHorizontal: 6, width: 52, justifyContent: 'center', alignItems: 'flex-end' }}>
-            <Image style={{ height: 22, width: 22, tintColor: colors.purple }}
-              source={require('../../../assets/icons/logout.png')} />
           </View>
         </TouchableOpacity>
       </View>
-      <View style={{ flexDirection: "row", marginLeft: 16, marginTop: -12, alignSelf: 'flex-start' }}>
-        <View style={{ backgroundColor: colors.purple, height: 24, width: 24, justifyContent: 'center', borderRadius: 50, alignItems: 'center', marginRight: 8, }}>
-          <Image style={{ height: 18, width: 18, tintColor: colors.black1 }}
+      <View style={{ flexDirection: "row", marginLeft: 16, marginTop: 0, marginBottom: 10, alignSelf: 'flex-start' }}>
+        <View style={{ backgroundColor: colors.purple, height: 26, width: 26, alignSelf: 'center', justifyContent: 'center', borderRadius: 50, alignItems: 'center', marginRight: 12, }}>
+          <Image style={{ height: 20, width: 20, tintColor: colors.black1 }}
             source={require('../../../assets/icons/user.png')} />
         </View>
         <Text style={[styles.title, { color: colors.purple }]}>{userdata.username}</Text>
       </View>
       <View style={{ height: 2, width: Dimensions.get('window').width - 32, marginTop: 10, marginBottom: 10, backgroundColor: colors.black2 }}></View>
-      <View
-        style={[styles.container, { marginLeft: 16, width: Dimensions.get('window').width - 32, height: Dimensions.get('window').height / 4, alignSelf: "flex-start", zIndex: 1, borderWidth: 1, borderColor: colors.white, backgroundColor: colors.black1 }]}
-      >
-        <Text style={[styles.title, { zIndex: 2, color: colors.white, alignSelf: 'flex-start', paddingLeft: 0, marginTop: -28, backgroundColor: colors.black1 }]}>   Devam Eden Alışkanlıklar: {allData.length}   </Text>
-
-        <View style={{ flexDirection: "row" }}>
-          <View style={{
-            height: 36, width: 28, marginRight: 8, marginLeft: -32, zIndex: 2,
-            backgroundColor: colors.black1, justifyContent: 'center', alignSelf: 'flex-start'
-          }}>
-            <Image style={{ height: 24, width: 24, tintColor: colors.white }}
-              source={require('../../../assets/icons/hour.png')} />
+      <TouchableOpacity onPress={openDatepicker}>
+        <View style={styles.NavCont}>
+          <View style={{ flexDirection: "column" }}>
+            <Text style={[styles.title, { fontFamily: "Manrope-SemiBold" }]} >Bildirim Ayarları</Text>
+            <Text style={[styles.desc]} >Günlük bildirim saatini buradan düzenleyebilir ve dilediğin zaman bildirimi iptal edebilirsin.</Text>
           </View>
-          {allData.length === 0 ?
-            <View style={{ height: Dimensions.get("window").height / 5, marginTop: 10, width: Dimensions.get("window").width - 78, justifyContent: 'center' }}>
-              <Text style={{
-                fontFamily: "Manrope-Medium", fontSize: 14, color: colors.gray,
-                textAlign: 'center'
-              }}>Devam eden alışkanlık yok.</Text>
-            </View> :
-            <FlatList
-              data={allData}
-              renderItem={renderAllItem}
-              keyExtractor={(item) => item._id} // Her öğe için benzersiz key
-              showsVerticalScrollIndicator={false}
-              pagingEnabled
-              snapToAlignment="start"
-              snapToInterval={Dimensions.get("window").height / 4} // Sayfanın yarısını kapla
-              contentContainerStyle={{ paddingBottom: 2, marginTop: 0, zIndex: 2, backgroundColor: colors.black1 }}
-              style={{ maxHeight: Dimensions.get("window").height / 4.8 }}
-            />}
+          <Image style={{ height: 20, width: 20, tintColor: colors.white, }}
+            source={require('../../../assets/icons/bell.png')} />
         </View>
-
-      </View>
-      <View
-        style={[styles.container, { marginLeft: 16, width: Dimensions.get('window').width - 32, height: Dimensions.get('window').height / 4, alignSelf: "flex-start", zIndex: 1, marginTop: 16, borderWidth: 1, borderColor: colors.purple, backgroundColor: colors.black1 }]}
-      >
-        <Text style={[styles.title, { zIndex: 2, color: colors.purple, alignSelf: 'flex-start', paddingLeft: 0, marginTop: -28, backgroundColor: colors.black1 }]}>   Tamamlanan Alışkanlıklar: {doneData.length}   </Text>
-
-        <View style={{ flexDirection: "row" }}>
-          <View style={{
-            height: 36, width: 28, marginRight: 8, marginLeft: -34, zIndex: 2,
-            backgroundColor: colors.black1, justifyContent: 'center', alignSelf: 'flex-start'
-          }}>
-            <Image style={{ height: 26, width: 26, tintColor: colors.purple }}
-              source={require('../../../assets/icons/checkmark.png')} />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate('MyHabitsPage')}>
+        <View style={styles.NavCont}>
+          <View style={{ flexDirection: "column" }}>
+            <Text style={[styles.title, { fontFamily: "Manrope-SemiBold" }]} >Alışkanlıklarım</Text>
+            <Text style={styles.desc} >Alışkanlıklarını buradan takip edebilir ve düzenleyebilirsin</Text>
           </View>
-          {doneData.length === 0 ?
-            <View style={{ height: Dimensions.get("window").height / 5, marginTop: 10, width: Dimensions.get("window").width - 78, justifyContent: 'center' }}>
-              <Text style={{
-                fontFamily: "Manrope-Medium", fontSize: 14, color: colors.gray,
-                textAlign: 'center'
-              }}>Tamamlanan alışkanlık yok.</Text>
-            </View> :
-            <FlatList
-              data={doneData}
-              renderItem={renderDoneItem}
-              keyExtractor={(item) => item._id} // Her öğe için benzersiz key
-              showsVerticalScrollIndicator={false}
-              pagingEnabled
-              snapToAlignment="start"
-              snapToInterval={Dimensions.get("window").height / 4} // Sayfanın yarısını kapla
-              contentContainerStyle={{ paddingBottom: 2, marginTop: 0, zIndex: 2, backgroundColor: colors.black1 }}
-              style={{ maxHeight: Dimensions.get("window").height / 4.8 }}
-            />}
+          <Image style={{ height: 20, width: 20, tintColor: colors.white, }}
+            source={require('../../../assets/icons/myhabits.png')} />
         </View>
-
-      </View>
-      <View style={{ height: 2, width: Dimensions.get('window').width - 32, marginTop: 16, marginBottom: 8, backgroundColor: colors.black2 }}></View>
-      <Text style={[styles.title, { color: colors.white, alignSelf: 'flex-start', paddingLeft: 16, marginBottom: 8, }]}>İstatistikler</Text>
-
-      <View style={{ flexDirection: "row", marginBottom: 16 }}>
-        <View style={{ backgroundColor: colors.black2, padding: 8, paddingLeft: 16, paddingRight: 16, flexDirection: "column", borderRadius: 6, width: (Dimensions.get("window").width - 48) / 2, borderWidth: 0.6, borderColor: colors.gray }}>
-          <Text style={[styles.title, { fontSize: 12, color: colors.white, fontFamily: "Manrope-Medium", alignSelf: 'center', textAlign: 'center' }]}>Oluşturulan Toplam Alışkanlık Sayısı</Text>
-          <View style={{ height: 0.8, width: (Dimensions.get('window').width - 112) / 2, marginTop: 10, marginBottom: 8, backgroundColor: colors.gray }}></View>
-          <Text style={[styles.title, { fontSize: 14, color: colors.white, fontFamily: "Manrope-Bold", alignSelf: 'center', marginTop: -2 }]}>{data.length}</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate('MyStats')}>
+        <View style={styles.NavCont}>
+          <View style={{ flexDirection: "column" }}>
+            <Text style={[styles.title, { fontFamily: "Manrope-SemiBold" }]} >İstatistiklerim</Text>
+            <Text style={styles.desc} >Alışkanlıklarınla ilgili istatistikleri buradan inceleyebilirsin</Text>
+          </View>
+          <Image style={{ height: 20, width: 20, tintColor: colors.white, }}
+            source={require('../../../assets/icons/graph.png')} />
         </View>
-
-        <View style={{ backgroundColor: colors.black2, padding: 8, paddingLeft: 16, paddingRight: 16, flexDirection: "column", borderRadius: 6, width: (Dimensions.get("window").width - 48) / 2, marginLeft: 16, borderWidth: 0.6, borderColor: colors.gray }}>
-          <Text style={[styles.title, { fontSize: 12, color: colors.white, fontFamily: "Manrope-Medium", alignSelf: 'center', textAlign: 'center' }]}>Tamamlanan Toplam Alışkanlık Sayısı</Text>
-          <View style={{ height: 0.8, width: (Dimensions.get('window').width - 112) / 2, marginTop: 10, marginBottom: 8, backgroundColor: colors.gray }}></View>
-          <Text style={[styles.title, { fontSize: 14, color: colors.white, fontFamily: "Manrope-Bold", alignSelf: 'center', marginTop: -2 }]}>{doneData.length}</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => handleLogout()}>
+        <View style={styles.NavCont}>
+          <Text style={[styles.title, { fontFamily: "Manrope-SemiBold", marginBottom: 2 }]} >Çıkış Yap</Text>
+          <Image style={{ height: 20, width: 20, tintColor: colors.white, marginRight: -2 }}
+            source={require('../../../assets/icons/logout.png')} />
         </View>
-      </View>
-
-      <View style={{ flexDirection: "row", marginLeft: 14, marginRight: 14 }}>{items}</View>
+      </TouchableOpacity>
     </View>
   );
 }

@@ -22,7 +22,7 @@ export default StyleSheet.create({
     },
     input: {
         marginTop: 16,
-        height: 48,
+        height: 44,
         paddingLeft: 16,
         justifyContent: "center",
         backgroundColor: colors.white,
@@ -37,7 +37,7 @@ export default StyleSheet.create({
     addButton: {
         marginTop: 16,
         backgroundColor: colors.purple,
-        height: 48,
+        height: 44,
         width: windowWidth - 32,
         justifyContent: "center",
         borderRadius: 8,
@@ -73,7 +73,7 @@ export default StyleSheet.create({
         textAlign: "center"
     },
     modalTitle: {
-        fontSize: 16,
+        fontSize: 14,
         marginBottom: 10,
         color: colors.purple,
         fontFamily: "Manrope-Bold",

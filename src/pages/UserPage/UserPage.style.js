@@ -16,7 +16,7 @@ export default StyleSheet.create({
         color: colors.white,
         fontSize: 14,
         fontFamily: "Manrope-Bold",
-        
+
     },
     innerCont: {
         flexDirection: 'column',
@@ -38,28 +38,6 @@ export default StyleSheet.create({
         borderColor: colors.gray,
         borderWidth: 0.5,
         flexDirection: "column"
-    },
-    desc: {
-        color: colors.white,
-        fontSize: 12,
-        fontFamily: "Manrope-ExtraLight",
-        marginTop: 2,
-        paddingRight: 20,
-    },
-    day: {
-        color: colors.white,
-        fontSize: 14,
-        fontFamily: "Manrope-Medium",
-        marginLeft: 8,
-        textAlignVertical: "center",
-        flex: 1
-    },
-    squares: {
-        width: 16,
-        height: 16,
-        borderRadius: 2,
-        backgroundColor: colors.white,
-        margin: 2,
     },
     button: {
         backgroundColor: colors.purple,
@@ -84,8 +62,8 @@ export default StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "rgba(0, 0, 0, 0.7)", // Saydam arka plan
-      },
-      modalContent: {
+    },
+    modalContent: {
         width: windowWidth - 32,
         padding: 20,
         backgroundColor: colors.black1,
@@ -93,33 +71,33 @@ export default StyleSheet.create({
         alignItems: "center",
         borderWidth: 0.8,
         borderColor: colors.purple
-      },
-      modalText: {
+    },
+    modalText: {
         fontSize: 14,
         marginBottom: 8,
         color: colors.white,
         fontFamily: "Manrope-Medium",
         textAlign: "center"
-      },
-      modalTitle: {
-        fontSize: 16,
+    },
+    modalTitle: {
+        fontSize: 14,
         marginBottom: 10,
         color: colors.purple,
         fontFamily: "Manrope-Bold",
         textAlign: "center"
-      },
-      addButtonFull: {
-        marginTop:16,
+    },
+    addButtonFull: {
+        marginTop: 16,
         backgroundColor: colors.purple,
-        height: 48,
+        height: 44,
         width: windowWidth - 72,
         justifyContent: "center",
         borderRadius: 8,
     },
     addButtonHalf: {
-        marginTop:16,
+        marginTop: 16,
         backgroundColor: colors.purple,
-        height: 48,
+        height: 44,
         width: (windowWidth - 88) / 2,
         justifyContent: "center",
         borderRadius: 8,
@@ -131,5 +109,89 @@ export default StyleSheet.create({
         color: colors.white,
         fontFamily: "Manrope-Bold",
         marginBottom: 2,
+    },
+    NavCont: {
+        flexDirection: "row",
+        width: windowWidth - 32,
+        backgroundColor: colors.black2,
+        borderRadius: 4,
+        marginTop: 8,
+        justifyContent: "space-between",
+        padding: 16,
+        alignItems: "center"
+    },
+    desc: {
+        color: colors.white,
+        fontSize: 12,
+        fontFamily: "Manrope-ExtraLight",
+        marginTop: 2,
+        width: windowWidth - 100
+    },
+    /*** */
+    centeredView: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        opacity: 1,
+    },
+    modalViewDate: {
+        backgroundColor: colors.black2,
+        borderRadius: 0,
+        borderTopWidth: 1,
+        borderColor: colors.purple,
+        borderBottomLeftRadius: 0,
+        borderBottomRightRadius: 0,
+        width: windowWidth,
+        height: 286,
+        justifyContent: "space-between",
+    },
+    buttonClose: {
+        backgroundColor: colors.black2,
+        width: 30,
+        height: 30,
+        borderRadius: 20,
+        marginRight: 8,
+        marginTop: 10,
+        alignItems: "flex-end",
+        justifyContent: "center"
+    },
+    buttonOpen: {
+        marginBottom: 28,
+        backgroundColor: colors.purple,
+        borderRadius: 6,
+        width: (windowWidth - 54) / 2,
+        height: 44,
+        justifyContent: "center",
+        alignSelf: "center",
+    },
+    textStyle: {
+        color: colors.white,
+        fontSize: 14,
+        marginBottom: 2,
+        fontFamily: "Manrope-Bold",
+        textAlign: 'center',
+    },
+    closeButton: {
+        alignSelf: "center",
+        height: 20,
+        width: 20,
+        tintColor: colors.purple
+    },
+    datePicker: {
+        height: 140,
+        width: windowWidth - 96,
+        alignSelf: "center",
+        justifyContent: "center",
+    },
+    dateContainer: {
+        justifyContent: "center",
+        backgroundColor: colors.gray,
+        alignItems: "center",
+        alignContent: "center",
+        alignSelf: "center",
+        borderRadius: 6,
+        marginTop: 0,
+        width: windowWidth - 36,
+        marginBottom: -4,
     },
 })

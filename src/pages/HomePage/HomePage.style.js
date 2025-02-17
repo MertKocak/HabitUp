@@ -42,7 +42,7 @@ export default StyleSheet.create({
         textAlign: "center"
       },
       modalTitle: {
-        fontSize: 16,
+        fontSize: 14,
         marginBottom: 10,
         color: colors.purple,
         fontFamily: "Manrope-Bold",

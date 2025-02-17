@@ -31,7 +31,7 @@ export default StyleSheet.create({
     },
     input: {
         marginTop: 8,
-        height: 48,
+        height: 44,
         paddingLeft: 16,
         justifyContent: "center",
         backgroundColor: colors.white,
@@ -46,7 +46,7 @@ export default StyleSheet.create({
     saveButton: {
         marginTop: 16,
         backgroundColor: colors.purple,
-        height: 48,
+        height: 44,
         width: windowWidth / 2 - 26,
         justifyContent: "center",
         borderRadius: 8,
@@ -63,7 +63,7 @@ export default StyleSheet.create({
     cancelButton: {
         marginTop: 16,
         backgroundColor: colors.black2,
-        height: 48,
+        height: 44,
         marginRight: 10,
         width: windowWidth / 2 - 26,
         justifyContent: "center",
@@ -103,7 +103,7 @@ export default StyleSheet.create({
         textAlign: "center"
     },
     modalTitle: {
-        fontSize: 16,
+        fontSize: 14,
         marginBottom: 10,
         color: colors.purple,
         fontFamily: "Manrope-Bold",
@@ -112,7 +112,7 @@ export default StyleSheet.create({
     addButtonFull: {
         marginTop: 16,
         backgroundColor: colors.purple,
-        height: 48,
+        height: 44,
         width: windowWidth - 72,
         justifyContent: "center",
         borderRadius: 8,
@@ -120,7 +120,7 @@ export default StyleSheet.create({
     addButtonHalf: {
         marginTop: 16,
         backgroundColor: colors.purple,
-        height: 48,
+        height: 44,
         width: (windowWidth - 88) / 2,
         justifyContent: "center",
         borderRadius: 8,

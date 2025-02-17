@@ -17,6 +17,7 @@ export default function AddHabitPage({ navigation }) {
   const [userdata, setUserdata] = useState('');
 
   const [modalVisibleDay, setModalVisibleDay] = useState(false);
+  const [modalVisibleEmpty, setModalVisibleEmpty] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,8 +37,11 @@ export default function AddHabitPage({ navigation }) {
 
 
   const handleSubmit = async () => {
-    if (habitDay > 1095) {
+    if (habitDay > 1095 || habitDay <= 0) {
       setModalVisibleDay(true)
+    }
+    else if (!habitDay || !habitTitle) {
+      setModalVisibleEmpty(true)
     } else {
       const userId = userdata._id;
       const habitData = {
@@ -61,25 +65,45 @@ export default function AddHabitPage({ navigation }) {
   return (
     <View style={styles.body}>
       <Modal
-              animationType="fade"
-              transparent={true}
-              visible={modalVisibleDay}
-              onRequestClose={() => setModalVisibleDay(false)}
-            >
-              <View style={styles.modalBackground}>
-                <View style={styles.modalContent}>
-                  <Text style={styles.modalTitle}>Alışkanlık Kaydedilemedi!</Text>
-                  <Text style={styles.modalText}>Alışkanlık süresi en fazla 1095 gün (3 yıl) olarak belirlenebilir.</Text>
-                  <TouchableOpacity onPress={() => setModalVisibleDay(false)}>
-                    <View style={styles.addButtonFull}>
-                      <Text style={styles.addButtonText}>
-                        Tekrar Dene
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                </View>
+        animationType="fade"
+        transparent={true}
+        visible={modalVisibleDay}
+        onRequestClose={() => setModalVisibleDay(false)}
+      >
+        <View style={styles.modalBackground}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Alışkanlık Kaydedilemedi!</Text>
+            <Text style={styles.modalText}>Alışkanlık süresi en az 1 ve en fazla 1095 gün (3 yıl) olarak belirlenebilir.</Text>
+            <TouchableOpacity onPress={() => setModalVisibleDay(false)}>
+              <View style={styles.addButtonFull}>
+                <Text style={styles.addButtonText}>
+                  Tekrar Dene
+                </Text>
               </View>
-            </Modal>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisibleEmpty}
+        onRequestClose={() => setModalVisibleEmpty(false)}
+      >
+        <View style={styles.modalBackground}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Alışkanlık Kaydedilemedi!</Text>
+            <Text style={styles.modalText}>Alışkanlık ismi ve süresi boş bırakılamaz.</Text>
+            <TouchableOpacity onPress={() => setModalVisibleEmpty(false)}>
+              <View style={styles.addButtonFull}>
+                <Text style={styles.addButtonText}>
+                  Tekrar Dene
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
       <View style={{ backgroundColor: colors.black2, flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 8, marginBottom: 24, width: Dimensions.get('window').width }}>
         <TouchableOpacity onPress=
           {() => navigation.goBack()}>
