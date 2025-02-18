@@ -51,15 +51,14 @@ export default function HomePage({ navigation, route }) {
     };
     const checkFirstLaunch = async () => {
       const firstLaunch = await AsyncStorage.getItem('firstLaunch');
-      if (firstLaunch === true) {
-        setIsFirstLaunch(true);
+      if (firstLaunch === null) {
         setModalVisible(true);
-        await AsyncStorage.setItem('firstLaunch', 'false');
+        await AsyncStorage.setItem('firstLaunch', 'true');
       }
     };
-    checkFirstLaunch();
-    fetchHabit();
     fetchData();
+    fetchHabit();
+    checkFirstLaunch();
   }, [userdata._id]);
 
   const closeModal = async () => {
@@ -131,12 +130,13 @@ export default function HomePage({ navigation, route }) {
             <View style={styles.modalContent}>
               <Text style={styles.modalTitle}>Uygulamayı kullanmaya başlarken...</Text>
               <Text style={styles.modalText}>HabitUp, edinmek istediğin alışkanlıkları takip etmene yardımcı olacak.</Text>
-              <Text style={styles.modalText}>Her gün alışkanlıkların için belirlediğin hedefleri tamamladığında 'Up' butonuna basarak ilerlemeni kaydedebilirsin. Eğer o gün tamamlamadıysan (ki bu çok normal bir durum), 'Çarpı' butonuna basarak durumu kaydedebilirsin.</Text>
+              <Text style={styles.modalText}>Her gün alışkanlıkların için belirlediğin hedefleri tamamladığında 'Up' butonuna basarak ilerlemeni kaydedebilirsin. Eğer o gün hedefini tamamlamadıysan (ki bu çok normal bir durum), 'Çarpı' butonuna basarak durumu kaydedebilirsin.</Text>
+              <Text style={[styles.modalText, {color: colors.purple}]}>Eğer ilerlemeni kaydetmeyi unutmak istemiyorsan "Profilim" sayfasından bildirim ayarlayabilirsin. Böylece hatırlaman daha kolay olur.</Text>
               <Text style={styles.modalText}>Bu şekilde, alışkanlıklarını takip edebilir ve ilerlemeni gözlemleyebilirsin.</Text>
-              <Text style={styles.modalText}>Unutma, koyduğun hedefleri tamamlayan da sensin tamamlayamayan da. Sonuç ne olursa olsun gösterdiğin çaba için kendinle gurur duymalısın.</Text>
+              <Text style={[styles.modalText, {fontFamily: "Manrope-SemiBold"}]}>Unutma, koyduğun hedefleri tamamlayan da sensin tamamlayamayan da. Sonuç ne olursa olsun gösterdiğin çaba için kendinle gurur duymalısın.</Text>
               <View style={{ flexDirection: "row" }}>
-                <Text style={[styles.modalText, {marginBottom: 0}]}>Anasayfadaki yer alan</Text>
-                <Image style={{ height: 16, width: 16, tintColor: colors.white, marginTop: 3, marginRight: 4, marginLeft: 4}}
+                <Text style={[styles.modalText, {marginBottom: 0}]}>Anasayfada yer alan</Text>
+                <Image style={{ height: 16, width: 16, tintColor: colors.white, marginTop: 4, marginRight: 6, marginLeft: 6}}
                   source={require('../../../assets/icons/info.png')} />
                 <Text style={[styles.modalText, {marginBottom: 0}]}>ikonuyla</Text>
               </View>

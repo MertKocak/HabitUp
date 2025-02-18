@@ -82,7 +82,7 @@ export default StyleSheet.create({
     addButtonFull: {
         marginTop: 16,
         backgroundColor: colors.purple,
-        height: 48,
+        height: 44,
         width: windowWidth - 72,
         justifyContent: "center",
         borderRadius: 8,
@@ -90,7 +90,7 @@ export default StyleSheet.create({
     addButtonHalf: {
         marginTop: 16,
         backgroundColor: colors.purple,
-        height: 48,
+        height: 44,
         width: (windowWidth - 88) / 2,
         justifyContent: "center",
         borderRadius: 8,

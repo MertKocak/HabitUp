@@ -51,7 +51,7 @@ export default StyleSheet.create({
       addButton: {
         marginTop:16,
         backgroundColor: colors.purple,
-        height: 48,
+        height: 44,
         width: windowWidth - 72,
         justifyContent: "center",
         borderRadius: 8,

@@ -1,43 +1,37 @@
 import PushNotification from 'react-native-push-notification';
-import { presets } from './babel.config';
 
+export const configureNotifications = () => {
+  PushNotification.createChannel(
+    {
+      channelId: 'habitup_channel',
+      name: 'HabitUp Kanalı',
+      importance: 4, // HIGH importance
+      vibrate: true,
+    },
+    (created) => console.log(`Kanal oluşturuldu: ${created}`)
+  );
 
-class Notifications {
-    constructor() {
-        PushNotification.configure({
-            onRegister: function (token) {
-            console.log('TOKEN:', token);
-            },
-            onNotification: function (notification) {
-            console.log('NOTIFICATION:', notification);
-            },
-            popInitialNotification: true,
-            requestPermissions: false,
-        });
+  PushNotification.configure({
+    onNotification: function (notification) {
+      console.log('Bildirim alındı:', notification);
+    },
+    requestPermissions: true,
+  });
+};
 
-        PushNotification.createChannel(
-            {
-                channelId: "reminder",
-                channelName: 'Task reminder notifications',
-            },
-            () => {},
-        ); 
-    }
+// Günlük bildirim ayarla
+export const scheduleDailyNotification = (hour, minute) => {
+  PushNotification.cancelAllLocalNotifications(); // Önce eski bildirimleri temizle
 
-    schduleNotification(date, title, message) {
-        PushNotification.localNotificationSchedule({
-            channelId: "reminder",
-            title : title,
-            message: message,
-            id: 1,
-            date,
-            repeatType: 'day',
-        });
-    }
+  PushNotification.localNotificationSchedule({
+    channelId: 'habitup_channel',
+    title: 'Alışkanlık Takibi',
+    message: 'Bugünün alışkanlıklarını tamamladın mı?',
+    date: new Date(Date.now() + 1000), // Şimdilik test için 1 saniye sonra çalıştır
+    allowWhileIdle: true,
+    repeatType: 'day', // Her gün tekrarla
+    repeatTime: 1,
+  });
 
-    cancelNotification(title) {
-        PushNotification.cancelLocalNotification({id: 1});
-    }
-}
-
-export default new Notifications();
+  console.log(`Her gün saat ${hour}:${minute}'de bildirim ayarlandı.`);
+};

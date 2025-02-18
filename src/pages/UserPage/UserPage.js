@@ -7,15 +7,12 @@ import HomePage from '../HomePage';
 import colors from '../../colors';
 import { all, default as axios } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { check, PERMISSIONS, RESULTS } from 'react-native-permissions';
-import { request } from 'react-native-permissions';
-import Notifications from '../../../Notifications';
 import DatePicker from 'react-native-date-picker';
 import { format } from "date-fns";
 import { tr } from "date-fns/locale"; // Türkçe dil desteği
+import PushNotification from "react-native-push-notification";
 
 export default function UserPage({ navigation, progressData }) {
-
 
   const [userdata, setUserdata] = useState('');
   const [allData, setallData] = useState([]);
@@ -38,28 +35,10 @@ export default function UserPage({ navigation, progressData }) {
         }
       }
     };
-    const requestPermission = async () => {
-      const checkPermission = await checkNotificationPermission();
-      if (checkPermission !== RESULTS.GRANTED) {
-        const request = await requestNotificationPermission();
-        if (request !== RESULTS.GRANTED) {
-        }
-      }
-    };
-    requestPermission();
     fetchDataAll();
+    createChannels();
+    loadData();
   }, []);
-
-  const requestNotificationPermission = async () => {
-    const result = await request(PERMISSIONS.ANDROID.POST_NOTIFICATIONS);
-    return result;
-  };
-
-  const checkNotificationPermission = async () => {
-    const result = await check(PERMISSIONS.ANDROID.POST_NOTIFICATIONS);
-    return result;
-  };
-
 
 
   const handleLogout = async () => {
@@ -77,33 +56,66 @@ export default function UserPage({ navigation, progressData }) {
     );
   }
 
-  const [date, setDate] = useState(new Date())
+  const [date, setDate] = useState(new Date());
+  const [notDate, setNotDate] = useState("Bildirim saati ayarlanmadı.");
 
-  const showToast = (title) => {
-    ToastAndroid.show("Hatırlatıcı kaydedildi: " + title, ToastAndroid.SHORT);
+  // Veriyi AsyncStorage'a kaydetme
+  const saveData = async (newDate) => {
+    try {
+      // Yeni veriyi AsyncStorage'a kaydet
+      await AsyncStorage.setItem('notificationDate', newDate);
+      setNotDate(newDate); // State'i de güncelle
+    } catch (e) {
+      console.error('Veri kaydedilirken hata oluştu', e);
+    }
   };
 
-  const handleRemoveNot = (data) => {
-    Notifications.cancelNotification(data);
-    setModalVisibleDate(!modalVisibleDate);
-    ToastAndroid.show("Hatırlatıcı iptal edildi", ToastAndroid.SHORT);
+  // Veriyi AsyncStorage'dan okuma
+  const loadData = async () => {
+    try {
+      const savedDate = await AsyncStorage.getItem('notificationDate');
+      if (savedDate !== null) {
+        setNotDate(savedDate); // State'i güncelle
+      }
+    } catch (e) {
+      console.error('Veri yüklenirken hata oluştu', e);
+    }
+  };
 
-}
 
-  const openDatepicker = () => {
-    setModalVisibleDate(true);
-  }
-  const closeDatePicker = () => {
+  const handleRemoveNot = () => {
+    PushNotification.cancelAllLocalNotifications()
     setModalVisibleDate(false);
+    saveData("Bildirim saati ayarlanmadı.")
+    ToastAndroid.show('Hatırlatıcı İptal Edildi', ToastAndroid.SHORT)
+
   }
 
-  const setNotification = (title, message) => {
-    setModalVisibleDate(!modalVisibleDate);
-    Notifications.schduleNotification(date, title, message);
-    const dateHM = date;
-    const formattedDate = format(dateHM, 'hh:mm', { locale: tr });
-    showToast(formattedDate);
+  const handleNotification = () => {
+    PushNotification.localNotificationSchedule({
+      channelId: "channel",
+      title: "Bugün Hedeflerini Tamamladın mı? 🎯",
+      message: "Zincirini kırma! Bugün de alışkanlığını tamamlayarak serini devam ettir!",
+      date: date,
+      allowWhileIdle: true,
+      bigText: "Hayal edebiliyorsan, yapabilirsin. – Walt Disney",
+      color: colors.purple,
+      repeatType: "day",
+    });
+    setModalVisibleDate(false);
+    const formattedDate = format(date, 'hh:mm');
+    ToastAndroid.show('Hatırlatıcı Kaydedildi!', ToastAndroid.SHORT);
+    saveData("Bildirim Saati: " + formattedDate);
   };
+
+  const createChannels = () => {
+    PushNotification.createChannel(
+      {
+        channelId: "channel",
+        channelName: "Channel"
+      }
+    )
+  }
 
   return (
     <View style={styles.body}>
@@ -148,22 +160,22 @@ export default function UserPage({ navigation, progressData }) {
             <View style={{ alignItems: 'flex-end', height: 28 }}>
               <TouchableOpacity
                 style={styles.buttonClose}
-                onPress={closeDatePicker}>
+                onPress={() => setModalVisibleDate(false)}>
                 <Image style={styles.closeButton} source={require("../../../assets/icons/cross.png")} />
               </TouchableOpacity>
             </View>
             <View style={styles.dateContainer}>
               <DatePicker androidVariant='iosClone' style={styles.datePicker} is24hourSource='device' fadeToColor='#D9D9D9' textColor='red' mode='time' date={date} onDateChange={setDate} />
             </View>
-            <View style = {{flexDirection: 'row', justifyContent: 'space-between', marginHorizontal:18}}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 18 }}>
               <TouchableOpacity
-                style={[styles.buttonOpen, {backgroundColor: colors.black2, borderWidth: 0.6, borderColor: colors.gray}]}
-                onPress={() => handleRemoveNot(data)}>
+                style={[styles.buttonOpen, { backgroundColor: colors.black2, borderWidth: 0.6, borderColor: colors.gray }]}
+                onPress={() => handleRemoveNot()}>
                 <Text style={styles.textStyle}>İptal Et</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.buttonOpen}
-                onPress={() => setNotification("İlaç Hatırlatıcısı", data)}>
+                onPress={() => handleNotification()}>
                 <Text style={styles.textStyle}>Kaydet</Text>
               </TouchableOpacity>
             </View>
@@ -193,15 +205,28 @@ export default function UserPage({ navigation, progressData }) {
         <Text style={[styles.title, { color: colors.purple }]}>{userdata.username}</Text>
       </View>
       <View style={{ height: 2, width: Dimensions.get('window').width - 32, marginTop: 10, marginBottom: 10, backgroundColor: colors.black2 }}></View>
-      <TouchableOpacity onPress={openDatepicker}>
-        <View style={styles.NavCont}>
-          <View style={{ flexDirection: "column" }}>
-            <Text style={[styles.title, { fontFamily: "Manrope-SemiBold" }]} >Bildirim Ayarları</Text>
-            <Text style={[styles.desc]} >Günlük bildirim saatini buradan düzenleyebilir ve dilediğin zaman bildirimi iptal edebilirsin.</Text>
+      <TouchableOpacity onPress={() => setModalVisibleDate(true)}>
+        <View style={[styles.NavCont, {flexDirection: 'column'}]}>
+          <View style={{ flexDirection: "row", width: Dimensions.get('window').width - 64, justifyContent: 'space-between', alignItems: 'center' }}>
+            <View style={{ flexDirection: "column" }}>
+              <Text style={[styles.title, { fontFamily: "Manrope-SemiBold" }]} >Bildirim Ayarları</Text>
+              <Text style={[styles.desc]} >Günlük bildirim saatini ayarla veya iptal et.</Text>
+            </View>
+            <Image style={{ height: 20, width: 20, tintColor: colors.white, }}
+              source={require('../../../assets/icons/bell.png')} />
           </View>
-          <Image style={{ height: 20, width: 20, tintColor: colors.white, }}
-            source={require('../../../assets/icons/bell.png')} />
+          <View style={{
+            backgroundColor: colors.gray,
+            padding: 8,
+            marginTop: 8,
+            marginLeft: -2,
+            borderRadius: 4,
+            width: Dimensions.get('window').width - 62
+          }}>
+            <Text style={[styles.desc, { marginTop: -2, fontFamily:"Manrope-Medium" }]}>{notDate}</Text>
+          </View>
         </View>
+
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate('MyHabitsPage')}>
         <View style={styles.NavCont}>
