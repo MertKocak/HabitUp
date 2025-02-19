@@ -6,14 +6,15 @@ import styles from "./HabitEditPage.style";
 import HomePage from '../HomePage';
 import colors from '../../colors';
 import { default as axios } from 'axios';
+import { bg } from 'date-fns/locale';
 
 export default function HabitEditPage({ navigation, route }) {
-  const { id, title, desc, day } = route.params;
+  const { id, title, desc, day, isDone } = route.params;
 
   const [habitTitle, sethabitTitle] = React.useState(title);
   const [habitDesc, sethabitDesc] = React.useState(desc);
   const [habitDay, sethabitDay] = React.useState(day);
-  const [habitIsDone, sethabitIsDone] = React.useState(false);
+  const [habitIsDone, sethabitIsDone] = React.useState(isDone);
 
   const [modalVisibleDay, setModalVisibleDay] = useState(false);
   const [modalVisibleDelete, setModalVisibleDelete] = useState(false);
@@ -46,7 +47,7 @@ export default function HabitEditPage({ navigation, route }) {
 
   function handleDelete(id) {
     setModalVisibleDelete(true)
-    
+
   }
 
   const deletefunction = () => {
@@ -66,7 +67,7 @@ export default function HabitEditPage({ navigation, route }) {
 
   const cancelSubmit = () => {
     setModalVisibleCancel(true)
-    
+
   };
 
   const cancelfunction = () => {
@@ -112,7 +113,7 @@ export default function HabitEditPage({ navigation, route }) {
             <Text style={styles.modalText}>Bu işlem geri alınamaz.</Text>
             <View style={{ flexDirection: 'row' }}>
               <TouchableOpacity onPress={() => setModalVisibleDelete(false)}>
-                <View style={[styles.addButtonHalf, { marginRight: 16,backgroundColor: colors.black2, borderWidth: 0.6, borderColor: colors.gray }]}>
+                <View style={[styles.addButtonHalf, { marginRight: 16, backgroundColor: colors.black2, borderWidth: 0.6, borderColor: colors.gray }]}>
                   <Text style={styles.addButtonText}>
                     Vazgeç
                   </Text>
@@ -141,7 +142,7 @@ export default function HabitEditPage({ navigation, route }) {
             <Text style={styles.modalText}>Yaptığınız değişiklikler kaydedilmeyecek.</Text>
             <View style={{ flexDirection: 'row' }}>
               <TouchableOpacity onPress={() => setModalVisibleCancel(false)}>
-                <View style={[styles.addButtonHalf, { marginRight: 16,backgroundColor: colors.black2, borderWidth: 0.6, borderColor: colors.gray }]}>
+                <View style={[styles.addButtonHalf, { marginRight: 16, backgroundColor: colors.black2, borderWidth: 0.6, borderColor: colors.gray }]}>
                   <Text style={styles.addButtonText}>
                     Düzenlemeye dön
                   </Text>
@@ -181,57 +182,68 @@ export default function HabitEditPage({ navigation, route }) {
       </Text>
       <View style={{ height: 2, width: Dimensions.get('window').width - 32, marginTop: 10, marginBottom: -6, backgroundColor: colors.black2 }}></View>
       <Text style={styles.subtitle}>Alışkanlık Adı</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Alışkanlık İsmi"
-        placeholderTextColor={colors.gray}
-        cursorColor={colors.black2}
-        value={habitTitle}
-        onChangeText={habitTitle => sethabitTitle(habitTitle)}
-      />
+
+      {isDone === true ?
+        <Text style={[styles.subtitle, { backgroundColor: colors.gray, width: Dimensions.get("window").width - 32, padding: 16, paddingBottom: 12, paddingTop: 12, borderRadius: 6, marginTop: 8 }]}>
+          {habitTitle}
+        </Text> : <TextInput
+          style={styles.input}
+          placeholder="Alışkanlık İsmi"
+          placeholderTextColor={colors.gray}
+          cursorColor={colors.black2}
+          value={habitTitle}
+          onChangeText={habitTitle => sethabitTitle(habitTitle)}
+        />}
       <Text style={styles.subtitle}>Alışkanlık Açıklaması</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Alışkanlık Açıklaması"
-        placeholderTextColor={colors.gray}
-        cursorColor={colors.black2}
-        value={habitDesc}
-        onChangeText={habitDesc => sethabitDesc(habitDesc)}
-      />
+      {isDone === true ?
+        <Text style={[styles.subtitle, { backgroundColor: colors.gray, width: Dimensions.get("window").width - 32, padding: 16, paddingBottom: 12, paddingTop: 12, borderRadius: 6, marginTop: 8 }]}>
+          {habitDesc}
+        </Text> :
+        <TextInput
+          style={styles.input}
+          placeholder="Alışkanlık Açıklaması"
+          placeholderTextColor={colors.gray}
+          cursorColor={colors.black2}
+          value={habitDesc}
+          onChangeText={habitDesc => sethabitDesc(habitDesc)}
+        />}
       <Text style={styles.subtitle}>Alışkanlık Süresi (Gün)</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Alışkanlık Süresi (Gün)"
-        placeholderTextColor={colors.gray}
-        cursorColor={colors.black2}
-        value={habitDay.toString()}
-        onChangeText={habitDay => sethabitDay(habitDay)}
-        keyboardType='numeric'
-      />
 
-      <View style={{ flexDirection: "row", marginTop: 4 }}>
-        <TouchableOpacity onPress={() => cancelSubmit()}>
-          <View style={styles.cancelButton}>
-            <Text style={styles.cancelButtonText}>
-              Vazgeç
-            </Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleSubmit(id)}>
-          <View style={styles.saveButton}>
-            <Text style={styles.saveButtonText}>
-              Kaydet
-            </Text>
-          </View>
-        </TouchableOpacity>
-      </View>
-      <Text>
-
-      </Text>
+      {isDone === true ?
+        <Text style={[styles.subtitle, { backgroundColor: colors.gray, width: Dimensions.get("window").width - 32, padding: 16, paddingBottom: 12, paddingTop: 12, borderRadius: 6, marginTop: 8 }]}>
+          {habitDay}
+        </Text> : <TextInput
+          style={styles.input}
+          placeholder="Alışkanlık Süresi (Gün)"
+          placeholderTextColor={colors.gray}
+          cursorColor={colors.black2}
+          value={habitDay.toString()}
+          onChangeText={habitDay => sethabitDay(habitDay)}
+          keyboardType='numeric'
+        />}
 
 
+      {isDone === true ?
+        null :
+        <View style={{ flexDirection: "row", marginTop: 4 }}>
+          <TouchableOpacity onPress={() => cancelSubmit()}>
+            <View style={styles.cancelButton}>
+              <Text style={styles.cancelButtonText}>
+                Vazgeç
+              </Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => handleSubmit(id)}>
+            <View style={styles.saveButton}>
+              <Text style={styles.saveButtonText}>
+                Kaydet
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      }
     </View>
   );
 }

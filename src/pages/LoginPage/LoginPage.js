@@ -159,7 +159,7 @@ export default function LoginPage({ navigation }) {
       />
       <View style={{ flexDirection: "row", alignItems: "center", backgroundColor: colors.white, height: 48, marginTop: 16, width: Dimensions.get('window').width - 32, borderRadius: 6 }}>
         <TextInput
-          style={[styles.input, { marginTop: 0, marginLeft: 0, marginRight: 0, width: Dimensions.get('window').width - 80, }]}
+          style={[styles.input, { marginTop: 0, marginBottom: 0,marginLeft: 0, marginRight: 0, width: Dimensions.get('window').width - 80, }]}
           placeholder="Şifre"
           placeholderTextColor={colors.gray}
           secureTextEntry={secureText}
@@ -172,6 +172,13 @@ export default function LoginPage({ navigation }) {
             source={secureText ? require('../../../assets/icons/hide.png') : require('../../../assets/icons/show.png')} />
         </TouchableOpacity>
       </View>
+      <TouchableOpacity style={{marginTop: 0, marginBottom: 4, alignSelf: 'flex-end'}} onPress={() => {
+        navigation.navigate('ForgotPasswordScreen');
+      }}>
+        <Text  style={[styles.registerText, {textAlign: 'right', marginTop: 4, color: colors.white}]}>
+          şifremi unuttum
+        </Text>
+      </TouchableOpacity>
       <TouchableOpacity onPress={() => handleLogin(email, password)}>
         <View style={styles.loginButton}>
           <Text style={styles.loginButtonText}>
@@ -192,8 +199,6 @@ export default function LoginPage({ navigation }) {
           </Text>
         </TouchableOpacity>
       </View>
-
-
     </View>
   );
 }

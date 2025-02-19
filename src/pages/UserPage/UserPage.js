@@ -11,6 +11,7 @@ import DatePicker from 'react-native-date-picker';
 import { format } from "date-fns";
 import { tr } from "date-fns/locale"; // Türkçe dil desteği
 import PushNotification from "react-native-push-notification";
+import { Platform,PermissionsAndroid } from 'react-native';
 
 export default function UserPage({ navigation, progressData }) {
 
@@ -35,10 +36,39 @@ export default function UserPage({ navigation, progressData }) {
         }
       }
     };
+    requestNotificationPermission();
     fetchDataAll();
     createChannels();
     loadData();
   }, []);
+
+  const requestNotificationPermission = async () => {
+    if(Platform.OS ==="android"){
+      try {
+        PermissionsAndroid.check('android.permission.POST_NOTIFICATIONS').then(
+          response => {
+            if(!response){
+              PermissionsAndroid.request('android.permission.POST_NOTIFICATIONS',{
+                  title: 'Notification',
+                  message:
+                    'App needs access to your notification ' +
+                    'so you can get Updates',
+                  buttonNeutral: 'Ask Me Later',
+                  buttonNegative: 'Cancel',
+                  buttonPositive: 'OK',
+              })
+            }
+          }
+        ).catch(
+          err => {
+            console.log("Notification Error=====>",err);
+          }
+        )
+      } catch (err){
+        console.log(err);
+      }
+    }
+  };
 
 
   const handleLogout = async () => {
@@ -94,8 +124,8 @@ export default function UserPage({ navigation, progressData }) {
   const handleNotification = () => {
     PushNotification.localNotificationSchedule({
       channelId: "channel",
-      title: "Bugün Hedeflerini Tamamladın mı? 🎯",
-      message: "Zincirini kırma! Bugün de alışkanlığını tamamlayarak serini devam ettir!",
+      title: "Hedeflerini Tamamladın mı? 🎯",
+      message: "Bugün en iyi versiyonun olmak için bir adım daha at!",
       date: date,
       allowWhileIdle: true,
       bigText: "Hayal edebiliyorsan, yapabilirsin. – Walt Disney",
@@ -103,7 +133,7 @@ export default function UserPage({ navigation, progressData }) {
       repeatType: "day",
     });
     setModalVisibleDate(false);
-    const formattedDate = format(date, 'hh:mm');
+    const formattedDate = format(date, 'HH:mm');
     ToastAndroid.show('Hatırlatıcı Kaydedildi!', ToastAndroid.SHORT);
     saveData("Bildirim Saati: " + formattedDate);
   };
@@ -197,16 +227,19 @@ export default function UserPage({ navigation, progressData }) {
           </View>
         </TouchableOpacity>
       </View>
-      <View style={{ flexDirection: "row", marginLeft: 16, marginTop: 0, marginBottom: 10, alignSelf: 'flex-start' }}>
-        <View style={{ backgroundColor: colors.purple, height: 26, width: 26, alignSelf: 'center', justifyContent: 'center', borderRadius: 50, alignItems: 'center', marginRight: 12, }}>
-          <Image style={{ height: 20, width: 20, tintColor: colors.black1 }}
+      <View style={{ flexDirection: "row", marginLeft: 16, marginTop: -4, marginBottom: 10, alignSelf: 'flex-start', backgroundColor: colors.gray, borderRadius: 4, width: Dimensions.get("window").width - 32, padding: 16 }}>
+        <View style={{ backgroundColor: colors.white, height: 28, width: 28, alignSelf: 'center', justifyContent: 'center', borderRadius: 50, alignItems: 'center', marginRight: 12, }}>
+          <Image style={{ height: 22, width: 22, tintColor: colors.gray }}
             source={require('../../../assets/icons/user.png')} />
         </View>
-        <Text style={[styles.title, { color: colors.purple }]}>{userdata.username}</Text>
+        <View style = {{flexDirection: 'column'}}>
+          <Text style={[styles.title, { color: colors.white }]}>{userdata.username}</Text>
+          <Text style={[styles.title, { color: colors.white, marginTop: -2 }]}>{userdata.email}</Text>
+        </View>
       </View>
       <View style={{ height: 2, width: Dimensions.get('window').width - 32, marginTop: 10, marginBottom: 10, backgroundColor: colors.black2 }}></View>
       <TouchableOpacity onPress={() => setModalVisibleDate(true)}>
-        <View style={[styles.NavCont, {flexDirection: 'column'}]}>
+        <View style={[styles.NavCont, { flexDirection: 'column' }]}>
           <View style={{ flexDirection: "row", width: Dimensions.get('window').width - 64, justifyContent: 'space-between', alignItems: 'center' }}>
             <View style={{ flexDirection: "column" }}>
               <Text style={[styles.title, { fontFamily: "Manrope-SemiBold" }]} >Bildirim Ayarları</Text>
@@ -223,7 +256,7 @@ export default function UserPage({ navigation, progressData }) {
             borderRadius: 4,
             width: Dimensions.get('window').width - 62
           }}>
-            <Text style={[styles.desc, { marginTop: -2, fontFamily:"Manrope-Medium" }]}>{notDate}</Text>
+            <Text style={[styles.desc, { marginTop: -2, fontFamily: "Manrope-Medium" }]}>{notDate}</Text>
           </View>
         </View>
 

@@ -144,8 +144,8 @@ export default function HabitCard({ navigation, data }) {
         }
     };
 
-    const goToEditPage = (id, title, desc, day) => {
-        navigation.navigate('HabitEditPage', { id, title, desc, day });
+    const goToEditPage = (id, title, desc, day, isDone) => {
+        navigation.navigate('HabitEditPage', { id, title, desc, day, isDone });
     };
 
 
@@ -158,7 +158,7 @@ export default function HabitCard({ navigation, data }) {
                 return (
                     <View style={styles.container} key={item._id}>
                         <View style={{ flexDirection: 'row' }}>
-                            <TouchableOpacity style={{ alignSelf: 'center', height: 32, marginRight: 4, justifyContent: 'center' }} onPress={() => goToEditPage(item._id, item.habitTitle, item.habitDesc, item.habitDay)}>
+                            <TouchableOpacity style={{ alignSelf: 'center', height: 32, marginRight: 4, justifyContent: 'center' }} onPress={() => goToEditPage(item._id, item.habitTitle, item.habitDesc, item.habitDay, item.habitIsDone)}>
                                 <Image style={{ height: 22, width: 22, tintColor: colors.purple, alignSelf: 'center', marginRight: 8 }}
                                     source={require('../../../assets/icons/edit.png')} />
                             </TouchableOpacity>

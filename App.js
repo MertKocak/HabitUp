@@ -11,6 +11,7 @@ import RegisterPage from './src/pages/RegisterPage';
 import UserPage from './src/pages/UserPage';
 import MyHabitsPage from './src/pages/MyHabitsPage';
 import MyStats from './src/pages/MyStats';
+import ForgotPasswordScreen from './src/pages/ForgotPasswordScreen';
 import { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -62,6 +63,15 @@ const App = () => {
           component={RegisterPage}
           options={({ navigation }) => ({
             title: 'HabitUp',
+            headerShown: false,
+            headerShadowVisible: false,
+          })}
+        />
+        <Stack.Screen
+          name="ForgotPasswordScreen"
+          component={ForgotPasswordScreen}
+          options={({ navigation }) => ({
+            title: 'ForgotPasswordScreen',
             headerShown: false,
             headerShadowVisible: false,
           })}

@@ -56,14 +56,14 @@ export default function MyHabitsPage({ navigation, progressData }) {
     fetchDataDone();
   }, [userdata._id, allData, doneData]);
 
-  const goToEditPage = (id, title, desc, day) => {
-    navigation.navigate('HabitEditPage', { id, title, desc, day });
+  const goToEditPage = (id, title, desc, day, isDone) => {
+    navigation.navigate('HabitEditPage', { id, title, desc, day, isDone });
   };
 
   const renderAllItem = ({ item }) => {
     const dayCount = item.habitDay;
     return (
-      <TouchableOpacity onPress={() => goToEditPage(item._id, item.habitTitle, item.habitDesc, item.habitDay)}>
+      <TouchableOpacity onPress={() => goToEditPage(item._id, item.habitTitle, item.habitDesc, item.habitDay, item.habitIsDone)}>
         <View
           style={[styles.container, { zIndex: 2, marginLeft: 0, width: Dimensions.get('window').width - 82, alignSelf: "flex-start", borderWidth: 0.5, backgroundColor: colors.black2 }]}
           key={item._id}
@@ -92,7 +92,7 @@ export default function MyHabitsPage({ navigation, progressData }) {
   const renderDoneItem = ({ item }) => {
     const dayCount = item.habitDay;
     return (
-      <TouchableOpacity onPress={() => goToEditPage(item._id, item.habitTitle, item.habitDesc, item.habitDay)}>
+      <TouchableOpacity onPress={() => goToEditPage(item._id, item.habitTitle, item.habitDesc, item.habitDay, item.habitIsDone)}>
         <View
           style={[styles.container, { zIndex: 2, marginLeft: 2, width: Dimensions.get('window').width - 82, alignSelf: "flex-start", borderWidth: 0.5, backgroundColor: colors.black2 }]}
           key={item._id}
