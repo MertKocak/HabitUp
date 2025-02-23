@@ -78,6 +78,7 @@ export default function UserPage({ navigation, progressData }) {
   const functionLogout = async () => {
     await AsyncStorage.setItem('isLoggedIn', '');
     await AsyncStorage.setItem('token', '');
+    PushNotification.cancelAllLocalNotifications();
     await navigation.dispatch(
       CommonActions.reset({
         index: 0,
@@ -122,14 +123,14 @@ export default function UserPage({ navigation, progressData }) {
   }
 
   const handleNotification = () => {
+    PushNotification.cancelAllLocalNotifications();
     PushNotification.localNotificationSchedule({
       channelId: "channel",
-      title: "Hedeflerini Tamamladın mı? 🎯",
-      message: "Bugün en iyi versiyonun olmak için bir adım daha at!",
+      title: "Hedefe Doğru! 🎯",
+      message: "Küçük adımlar büyük başarılar getirir. İlerlemeni kaydetmeyi unutma!",
       date: date,
       allowWhileIdle: true,
-      bigText: "Hayal edebiliyorsan, yapabilirsin. – Walt Disney",
-      color: colors.purple,
+      color: "#B836FC",
       repeatType: "day",
     });
     setModalVisibleDate(false);
